@@ -1,4 +1,7 @@
 {
+    "config": {
+        "vendor-dir": "./src/vendor"
+    },
     "require": {
         "phpoffice/phpexcel": "^1.8"
     }
