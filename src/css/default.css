@@ -1,0 +1,23 @@
+.kscy-header-background {
+    background-image: url('../images/header-background.png');
+    background-size: cover;
+    padding-top: 2em;
+    padding-bottom: 3em;
+}
+
+.kscy-header-logo {
+    vertical-align: middle;
+    max-width: 12em;
+}
+
+.kscy-header-subtitle {
+    color: white;
+    margin: 0;
+}
+
+.kscy-footer-background {
+    background-color:#0c4678;
+    padding-top: 3em;
+    padding-bottom: 3em;
+    margin-top: 3em;
+}

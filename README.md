@@ -1,3 +1,3 @@
 # KSCY Registration System
 
-KSCY 참가 지원 시스템
+KSCY 참가접수 시스템

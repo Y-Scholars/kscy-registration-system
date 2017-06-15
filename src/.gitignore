@@ -1,5 +1,6 @@
 /vendor
 .php_cs.cache
 .DS_Store
+db.account.php
 Thumbs.db
 /phpunit.xml
