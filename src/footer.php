@@ -1,4 +1,11 @@
 <?php
+/*
+ * KSCY Registration System 2.0
+ * 
+ * Written By HyunJun Kim
+ * 2017. 06. 15
+ */
+
 $footer_developer_mail = "hyunjun.leo.kim@gmail.com";
 ?>
 <div class="kscy-footer-background">
