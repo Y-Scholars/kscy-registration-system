@@ -3,10 +3,10 @@
     background-size: cover;
     padding-top: 2em;
     padding-bottom: 3em;
+    
 }
 
 .kscy-header-logo {
-    vertical-align: middle;
     max-width: 12em;
 }
 
@@ -15,9 +15,26 @@
     margin: 0;
 }
 
+.kscy-body {
+    padding-top: 3em;
+    padding-bottom: 3em;
+}
+
+.kscy-body-step-text {
+    margin-top: 25px;
+    line-height: 115%
+}
+
+.kscy-body-step-buttons {
+    margin-top: 40px;
+}
+
+.kscy-body-step-label {
+    margin-top: 15px;
+}
+
 .kscy-footer-background {
     background-color:#0c4678;
     padding-top: 3em;
     padding-bottom: 3em;
-    margin-top: 3em;
 }

@@ -32,3 +32,4 @@ $header_title = "KSCY " . $title_korean;
         <h1 class="kscy-header-subtitle"><?php echo($title_english);?></h1>
     </div>
 </div>
+
