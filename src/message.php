@@ -5,7 +5,7 @@
  * Written By HyunJun Kim
  * 2017. 06. 15
  */
- 
+
 error_reporting(0);
 
 function process() {
@@ -25,13 +25,18 @@ function process() {
         case "student":
             $message_title = "학생 등록이 완료되었습니다";
             $message_type = "success";
-            $message_text = "마감일 전까지 학생 정보는 자유롭게 수정하실 수 있습니다.";
+            $message_text = "지원서를 작성하여 참가 접수 절차를 마무리하여 주시기 바랍니다.";
             break;
         case "student-review":
             $message_title = "학생 정보 수정이 완료되었습니다";
             $message_type = "success";
             $message_text = "마감일 전까지 학생 정보는 자유롭게 수정하실 수 있습니다.";
             break;
+        case "student-error":
+            $message_title = "학생 정보 등록에 실패하였습니다.";
+            $message_type = "negative";
+            $message_text = "다시 시도해 주시기 바랍니다.";
+            break;    
         case "application":
             $message_title = "지원서 제출이 완료되었습니다";
             $message_type = "success";
