@@ -5,9 +5,15 @@
  * Written By HyunJun Kim
  * 2017. 06. 15
  */
+ 
+error_reporting(0);
+
+require_once("./session.php");
 
 $title_korean = "참가접수 시스템";
 $title_english ="Registration System";
+
+$session->delete_student_no();
 
 include_once("header.php");
 ?>

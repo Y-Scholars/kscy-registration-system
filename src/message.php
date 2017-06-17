@@ -22,6 +22,11 @@ function process() {
     $message_text = "";
 
     switch ($type) {
+        case "error":
+            $message_title = "에러가 발생하였습니다";
+            $message_type = "negative";
+            $message_text = "잘못된 요청이거나 접근입니다. 다시 시도해 주시기 바랍니다.";
+            break;
         case "student":
             $message_title = "학생 등록이 완료되었습니다";
             $message_type = "success";
@@ -75,7 +80,7 @@ include_once("header.php");
 ?>
 <div class="kscy-body">
 <div class="ui container">
-    <div class="ui large <?php echo($response["type"]);?> message">
+    <div class="ui <?php echo($response["type"]);?> message">
         <div class="header">
             <?php echo($response["title"]);?>
         </div>

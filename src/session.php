@@ -13,6 +13,11 @@ class Session {
         return $_SESSION["student_no"];
     }
 
+    public function delete_student_no() {
+        $_SESSION["student_no"] = "";
+        session_destroy();
+    }
+
     public function set_student_no($student_no) {
         $_SESSION["student_no"] = $student_no;
     }

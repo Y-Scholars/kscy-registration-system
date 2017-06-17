@@ -8,9 +8,9 @@
 
 error_reporting(0);
 
-require_once("db.php");
-require_once("utils.php");
-require_once("session.php");
+require_once("./db.php");
+require_once("./utils.php");
+require_once("./session.php");
 
 function process() {
 
@@ -19,8 +19,14 @@ function process() {
     global $utils;
 
     $review_mode = false;
-    if (!empty($_GET["review"]) && $_GET["review"] == true && isset($_SESSION['student_no'])) {
+    if (!empty($_GET["review"]) && $_GET["review"] == true) {
         $review_mode = true;
+    }
+
+    // 권한이 없을 경우 로그인 페이지로 이동
+    if ($review_mode && empty($session->get_student_no())) {
+        header("Location: authentication.php?redirect=".base64_encode("student.php?review=true"));
+        exit();
     }
 
     // 변수로 POST 값들 읽어오기
@@ -163,6 +169,8 @@ function process() {
         }
     }
 
+    $session->delete_student_no();
+
     return array(
                 "result" => "success",
                 "review" => $review_mode,
@@ -174,10 +182,10 @@ function process() {
 $response = process();
 
 if ($response["result"] == "success") {
-    header("Location: ./message.php?action=student" . ($response["review"] ? "-review" : ""));
+    header("Location: ./message.php?type=student" . ($response["review"] ? "-review" : ""));
     exit();
 } else if ($response["result"] == "error") {
-    header("Location: ./message.php?action=student-error");
+    header("Location: ./message.php?type=student-error");
     exit();
 }
 
