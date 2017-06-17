@@ -14,7 +14,7 @@ include_once("header.php");
 <div class="kscy-body">
 <div class="ui container">
 <h2 class="ui header">참가접수 절차</h2>
-<div class="ui big stackable fluid four steps">
+<div class="ui large stackable fluid four steps">
     <div class="step">
         <div class="content">
             <div class="title">학생 등록</div>
@@ -31,7 +31,7 @@ include_once("header.php");
     <div class="active step">
         <div class="content">
             <div class="title">지원서 작성</div>
-            <div class="kscy-body-step-text">소기의 양식에 따라 지원서를 작성해 주시기 바랍니다. 지원서는 마감일 전까지 수정이 가능합니다. <a href="#"><i>더 알아보기</i></a></div>
+            <div class="kscy-body-step-text">소기의 양식에 따라 지원서를 작성해 주시기 바랍니다. 제출된 지원서는 마감일 전까지 수정이 가능합니다. <a href="#"><i>더 알아보기</i></a></div>
             <div class="kscy-body-step-buttons">
                 <a class="ui button" href="./application.php">지원서 작성</a>
                 <a class="ui button" href="./application.php?review=true" style="margin-top: 5px">지원서 수정</a>

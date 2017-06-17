@@ -1,4 +1,10 @@
 <?php
+/*
+ * KSCY Registration System 2.0
+ * 
+ * Written By HyunJun Kim
+ * 2017. 06. 15
+ */
 
 error_reporting(0);
 
@@ -53,7 +59,7 @@ function process($review_mode) {
                            ->select('survey')
                            ->select('auto_switch')
                            ->where('no', '=', $session->get_student_no())
-                           ->goAndGet();
+                           ->go_and_get();
 
         if (!$student_data) {
             return array(
@@ -110,7 +116,7 @@ function process($review_mode) {
         $response = $db->in('kscy_students')
                        ->select('email')
                        ->where('email', '=', $utils->purify($user_student_email))
-                       ->goAndGet();
+                       ->go_and_get();
 
         if ($response) {
             return array(
@@ -157,17 +163,16 @@ if (!empty($_GET["review"]) && $_GET["review"] == true && isset($_SESSION['stude
     $review_mode = true;
 }
 
-$response = page_student($review_mode);
+$response = process($review_mode);
 
 $title_korean = $review_mode ? "학생 조회" : "학생 등록";
 $title_english = $review_mode ? "Student Review" : "Student Registration";
 
-include "header.php";
-
+include_once("header.php");
 ?>
 
-    <div class="ui one column centered doubling stackable grid container">
-        <div class="column">
+<div class="kscy-body">
+<div class="ui container">
 
 
 <?php
