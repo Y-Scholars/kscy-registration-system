@@ -5,7 +5,7 @@
  * Written By HyunJun Kim
  * 2017. 06. 15
  */
- 
+
 error_reporting(0);
 
 require_once("./session.php");
@@ -20,7 +20,7 @@ include_once("header.php");
 <div class="kscy-body">
 <div class="ui container">
 <h2 class="ui header">참가접수 절차</h2>
-<div class="ui large stackable fluid four steps">
+<div class="ui stackable fluid four steps">
     <div class="step">
         <div class="content">
             <div class="title">학생 등록</div>

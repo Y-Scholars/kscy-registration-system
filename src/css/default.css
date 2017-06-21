@@ -38,3 +38,7 @@
     padding-top: 3em;
     padding-bottom: 3em;
 }
+
+.ui.file.input input[type="file"] {
+    display: none;
+}

@@ -178,7 +178,6 @@ function process() {
             );
 }
 
-
 $response = process();
 
 if ($response["result"] == "success") {
@@ -192,7 +191,7 @@ if ($response["result"] == "success") {
 $title_korean = $response["review"] ? "학생 정보 수정" : "학생 등록";
 $title_english = $response["review"] ? "Student Review" : "Student Registration";
 
-include_once("header.php");
+include_once("./header.php");
 ?>
 
 <div class="ui modal" id="term1">
@@ -252,49 +251,44 @@ include_once("header.php");
         <h4 class="ui dividing header" style="margin-top: 40px">기본 정보</h4>
         <div class="field required">
             <label>성명 (Name)</label>
-            <div class="field">
-                <input type="text" name="studentName" placeholder="이름" value="<?php $utils->display($response["data"]["name"]);?>">
+            <input type="text" name="studentName" placeholder="이름" value="<?php $utils->display($response["data"]["name"]);?>">
+        </div>
+        <div class="two fields">
+            <div class="ten wide field required">
+                <label>소속 (Affiliation)</label>
+                <input type="text" name="studentSchoolName" placeholder="학교 이름" value="<?php $utils->display($response["data"]["school"]);?>">
+            </div>
+            <div class="six wide field required">
+                <label>학년 (Grade)</label>
+                <select class="ui fluid dropdown" name="studentSchoolGrade" id="studentSchoolGrade">
+                    <option value="1">중학교 1학년</option>
+                    <option value="2">중학교 2학년</option>
+                    <option value="3">중학교 3학년</option>
+                    <option value="4">고등학교 1학년</option>
+                    <option value="5">고등학교 2학년</option>
+                    <option value="6">고등학교 3학년</option>
+                    <option value="7">기타 (검정고시 등)</option>
+                </select>
             </div>
         </div>
-        <div class="field required">
-            <label>소속 (Affiliation)</label>
-            <div class="fields">
-                <div class="twelve wide field">
-                    <input type="text" name="studentSchoolName" placeholder="학교 이름" value="<?php $utils->display($response["data"]["school"]);?>">
-                </div>
-                <div class="four wide field">
-                    <select class="ui fluid dropdown" name="studentSchoolGrade" id="studentSchoolGrade">
-                        <option value="1">중학교 1학년</option>
-                        <option value="2">중학교 2학년</option>
-                        <option value="3">중학교 3학년</option>
-                        <option value="4">고등학교 1학년</option>
-                        <option value="5">고등학교 2학년</option>
-                        <option value="6">고등학교 3학년</option>
-                        <option value="7">기타 (검정고시 등)</option>
-                    </select>
-                </div>
+        <div class="two fields">
+            <div class="eight wide field required">
+                <label>전화번호 (Mobile)</label>
+                <input type="text" name="studentPhoneNumber" placeholder="전화번호" value="<?php $utils->display($response["data"]["phone_number"]);?>">
+            </div>
+            <div class="eight wide field required <?php if ($response["review"]) { echo(" disabled");}?>">
+                <label>이메일 주소 (Email)</label>
+                <input type="email" name="studentEmail" placeholder="이메일 주소" value="<?php $utils->display($response["data"]["email"]);?>">
             </div>
         </div>
-        <div class="field required">
-            <label>연락처 (Contact)</label>
-            <div class="fields">
-                <div class="six wide field">
-                    <input type="text" name="studentPhoneNumber" placeholder="전화번호" value="<?php $utils->display($response["data"]["phone_number"]);?>">
-                </div>
-                <div class="ten wide field<?php if ($response["review"]) { echo(" disabled");}?>">
-                    <input type="email" name="studentEmail" placeholder="이메일 주소" value="<?php $utils->display($response["data"]["email"]);?>">
-                </div>
+        <div class="two fields">
+            <div class="eight wide field required">
+                <label>비밀번호 (Password)</label>
+                <input type="password" name="studentPassword" placeholder="비밀번호">
             </div>
-        </div>
-        <div class="field required">
-            <label>비밀번호 (Password)</label>
-            <div class="fields">
-                <div class="eight wide field">
-                    <input type="password" name="studentPassword" placeholder="비밀번호">
-                </div>
-                <div class="eight wide field">
-                    <input type="password" name="studentPasswordRepeat" placeholder="비밀번호 재입력">
-                </div>
+            <div class="eight wide field">
+                <label>비밀번호 재입력 (Repeat Password)</label>
+                <input type="password" name="studentPasswordRepeat" placeholder="비밀번호 재입력">
             </div>
         </div>
         <h4 class="ui dividing header" style="margin-top: 40px">추가 정보 <small><em>(캠프 참여 예정인 학생만 작성)</em></small></h4>
@@ -321,15 +315,14 @@ include_once("header.php");
                 </div>
             </div>
         </div>
-        <div class="field">
-            <label>보호자 (Guardian)</label>
-            <div class="fields">
-                <div class="six wide field">
-                    <input type="text" name="studentGuardianName" placeholder="보호자 성명" value="<?php $utils->display($response["data"]["guardian_name"]);?>">
-                </div>
-                <div class="ten wide field">
-                    <input type="text" name="studentGuardianPhoneNumber" placeholder="보호자 연락처" value="<?php $utils->display($response["data"]["guardian_phone_number"]);?>">
-                </div>
+        <div class="two fields">
+            <div class="eight wide field">
+                <label>보호자 이름 (Guardian)</label>
+                <input type="text" name="studentGuardianName" placeholder="보호자 성명" value="<?php $utils->display($response["data"]["guardian_name"]);?>">
+            </div>
+            <div class="eight wide field">
+                <label>보호자 전화번호 (Guardian Mobile)</label>
+                <input type="text" name="studentGuardianPhoneNumber" placeholder="보호자 연락처" value="<?php $utils->display($response["data"]["guardian_phone_number"]);?>">
             </div>
         </div>
         <h4 class="ui dividing header" style="margin-top: 40px">기타</h4>
@@ -404,5 +397,5 @@ $('.ui.form')
 );
 </script>
 <?php
-include "footer.php";
+include_once("./footer.php");
 ?>

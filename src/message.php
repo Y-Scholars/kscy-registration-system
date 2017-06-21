@@ -57,6 +57,11 @@ function process() {
             $message_type = "success";
             $message_text = "마감일 전까지 지원서는 자유롭게 수정하실 수 있습니다.";
             break;
+        case "application-not-exists":
+            $message_title = "본 학생이 팀장인 지원서가 없습니다";
+            $message_type = "negative";
+            $message_text = "지원서를 작성하거나, 팀장 정보로 다시 시도해 주세요.";
+            break;
         case "application-delete":
             $message_title = "지원서 삭제가 완료되었습니다";
             $message_type = "success";
