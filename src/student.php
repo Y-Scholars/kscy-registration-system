@@ -11,6 +11,7 @@ error_reporting(0);
 require_once("./db.php");
 require_once("./utils.php");
 require_once("./session.php");
+require_once("./strings.php");
 
 function process() {
 
@@ -261,13 +262,9 @@ include_once("./header.php");
             <div class="six wide field required">
                 <label>학년 (Grade)</label>
                 <select class="ui fluid dropdown" name="studentSchoolGrade" id="studentSchoolGrade">
-                    <option value="1">중학교 1학년</option>
-                    <option value="2">중학교 2학년</option>
-                    <option value="3">중학교 3학년</option>
-                    <option value="4">고등학교 1학년</option>
-                    <option value="5">고등학교 2학년</option>
-                    <option value="6">고등학교 3학년</option>
-                    <option value="7">기타 (검정고시 등)</option>
+                    <?php foreach($strings["grade_names"] as $key => $value) { ?>
+                    <option value="<?php echo($key);?>"><?php echo($value);?></option>
+                    <?php } ?>
                 </select>
             </div>
         </div>
@@ -330,12 +327,9 @@ include_once("./header.php");
             <label>KSCY를 알게 된 경로 (Survey)</label>
             <div class="field">
                 <select class="ui fluid dropdown" name="studentSurvey" id="studentSurvey">
-                    <option value="1">SNS (페이스북)</option>
-                    <option value="2">학교에 게시된 포스터</option>
-                    <option value="3">선생님의 권유</option>
-                    <option value="4">부모님의 권유</option>
-                    <option value="5">주변 친구 및 선배의 권유</option>
-                    <option value="6">기타</option>
+                    <?php foreach($strings["survey_names"] as $key => $value) { ?>
+                    <option value="<?php echo($key);?>"><?php echo($value);?></option>
+                    <?php } ?>
                 </select>
             </div>
         </div>

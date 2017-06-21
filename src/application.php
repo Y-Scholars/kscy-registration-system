@@ -123,7 +123,7 @@ $title_english = "Application ". ($response["review"] ? "Review" : "Submission")
 include_once("./header.php");
 ?>
 
-<div class="ui modal" id="agrees">
+<div class="ui modal" id="terms">
     <i class="close icon"></i>
     <div class="header">KSCY 운영 및 심사 방침</div>
     <div class="content">

@@ -260,7 +260,7 @@ function render_paper($response) {
         <div class="required inline field" style="margin-top:25px">
             <div class="ui checkbox">
                 <input type="checkbox" tabindex="0" name="paperAgreeTerms" class="hidden">
-                <label>본인은 KSCY <a onclick="$('#agrees').modal('show')">운영 및 심사 방침</a>에 동의합니다</label>
+                <label>본인은 KSCY <a onclick="$('#terms').modal('show')">운영 및 심사 방침</a>에 동의합니다</label>
             </div>
         </div>
         <button class="ui button" type="submit" style="margin-top: 15px">지원서 <?php echo($response["review"] ? "수정" : "제출")?></button>
