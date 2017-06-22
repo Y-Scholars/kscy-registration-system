@@ -54,10 +54,10 @@ function process() {
             $response = process_plan($review_mode, $delete_mode);
             break;
         case "mentoring":
-            //$response = process_mentoring($review_mode, $delete_mode);
+            $response = process_mentoring($review_mode, $delete_mode);
             break;
         case "camp":
-            //$response = process_camp($review_mode, $delete_mode);
+            $response = process_camp($review_mode, $delete_mode);
             break;
         default:
             $tab = "paper";
@@ -78,7 +78,7 @@ function process() {
                            ->select('no')
                            ->where('team_leader', '=', $session->get_student_no())
                            ->go_and_get();
-        $camp_exists = $db->in('kscy_mentorings')
+        $camp_exists = $db->in('kscy_camps')
                            ->select('no')
                            ->where('team_leader', '=', $session->get_student_no())
                            ->go_and_get();
@@ -177,16 +177,16 @@ include_once("./header.php");
     <div class="ui top attached tabular menu" style="margin-top: 40px">
         <?php 
         if ($response["tab_enabled"]["paper"]) { ?>
-            <a class="<?php echo($response["tab"] == "paper" ? "active " : "")?>item" href="./application.php?tab=paper">논문 발표</a><?php
+            <a class="<?php echo($response["tab"] == "paper" ? "active " : "")?>item" href="./application.php?tab=paper<?php echo($response["review"] ? "&review=true" : "");?>">논문 발표</a><?php
         }
         if ($response["tab_enabled"]["plan"]) { ?>
-            <a class="<?php echo($response["tab"] == "plan" ? "active " : "")?>item" href="./application.php?tab=plan">연구계획 발표</a><?php
+            <a class="<?php echo($response["tab"] == "plan" ? "active " : "")?>item" href="./application.php?tab=plan<?php echo($response["review"] ? "&review=true" : "");?>">연구계획 발표</a><?php
         }
         if ($response["tab_enabled"]["mentoring"]) { ?>
-            <a class="<?php echo($response["tab"] == "mentoring" ? "active " : "")?>item" href="./application.php?tab=mentoring">멘토링</a><?php
+            <a class="<?php echo($response["tab"] == "mentoring" ? "active " : "")?>item" href="./application.php?tab=mentoring<?php echo($response["review"] ? "&review=true" : "");?>">멘토링</a><?php
         }
         if ($response["tab_enabled"]["camp"]) { ?>
-            <a class="<?php echo($response["tab"] == "camp" ? "active " : "")?>item" href="./application.php?tab=camp">캠프</a><?php
+            <a class="<?php echo($response["tab"] == "camp" ? "active " : "")?>item" href="./application.php?tab=camp<?php echo($response["review"] ? "&review=true" : "");?>">캠프</a><?php
         } ?>
     </div>
 
@@ -200,10 +200,10 @@ include_once("./header.php");
                 echo(render_plan($response));
                 break;
             case "mentoring":
-                //render_mentoring($response);
+                render_mentoring($response);
                 break;
             case "camp":
-                //render_camp($response);
+                render_camp($response);
                 break;
         } ?>
     </div>
