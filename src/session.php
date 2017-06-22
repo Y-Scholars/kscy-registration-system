@@ -5,7 +5,8 @@
  * Written By HyunJun Kim
  * 2017. 06. 15
  */
-
+ 
+error_reporting(0);
 session_start();
 
 class Session {

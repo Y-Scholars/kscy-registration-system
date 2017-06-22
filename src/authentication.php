@@ -78,7 +78,7 @@ else if ($response["result"] == "error") {
 $title_korean = "학생 로그인";
 $title_english = "Student Authentication";
     
-include_once("header.php");
+include_once("./header.php");
 ?>
 
 <div class="kscy-body">
@@ -99,14 +99,14 @@ include_once("header.php");
     <?php } ?>
     
     <form class="ui form" method="post" id="loginForm" style="">
-        <div class="two fields">
+        <div class="two fields" style="margin-top: 40px">
             <div class="field">
                 <label>이메일 주소 (Email)</label>
-                <input placeholder="이메일 주소" name="studentEmail" type="text">
+                <input placeholder="이메일 주소 입력" name="studentEmail" type="text">
             </div>
             <div class="field">
                 <label>비밀번호 (Password)</label>
-                <input placeholder="비밀번호" name="studentPassword" type="password">
+                <input placeholder="비밀번호 입력" name="studentPassword" type="password">
             </div>
         </div>
         <button type="submit" class="ui submit button">로그인</button>
@@ -116,15 +116,13 @@ include_once("header.php");
 </div>
 </div>
 <script>
-$('#loginForm')
-    .form({
-        fields: {
-            studentEmail     : 'empty',
-            studentPassword   : 'empty',
-        }
+$('.ui.form').form({
+    fields: {
+        studentEmail: 'empty',
+        studentPassword: 'empty',
     }
-);
+});
 </script>
 <?php
-include "footer.php";
+include_once("./footer.php");
 ?>

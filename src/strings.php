@@ -46,7 +46,6 @@ $survey_names = array(
     "6" => "기타"
 );
 
-
 $strings = array(
     "session_names" => $session_names,
     "grade_names" => $grade_names,

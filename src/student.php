@@ -251,13 +251,13 @@ include_once("./header.php");
     <form class="ui form" method="post">
         <h4 class="ui dividing header" style="margin-top: 40px">기본 정보</h4>
         <div class="field required">
-            <label>성명 (Name)</label>
-            <input type="text" name="studentName" placeholder="이름" value="<?php $utils->display($response["data"]["name"]);?>">
+            <label>이름 (Name)</label>
+            <input type="text" name="studentName" placeholder="이름 입력" value="<?php $utils->display($response["data"]["name"]);?>">
         </div>
         <div class="two fields">
             <div class="ten wide field required">
-                <label>소속 (Affiliation)</label>
-                <input type="text" name="studentSchoolName" placeholder="학교 이름" value="<?php $utils->display($response["data"]["school"]);?>">
+                <label>학교 이름 (Affiliation)</label>
+                <input type="text" name="studentSchoolName" placeholder="학교 이름 입력" value="<?php $utils->display($response["data"]["school"]);?>">
             </div>
             <div class="six wide field required">
                 <label>학년 (Grade)</label>
@@ -271,17 +271,17 @@ include_once("./header.php");
         <div class="two fields">
             <div class="eight wide field required">
                 <label>전화번호 (Mobile)</label>
-                <input type="text" name="studentPhoneNumber" placeholder="전화번호" value="<?php $utils->display($response["data"]["phone_number"]);?>">
+                <input type="text" name="studentPhoneNumber" placeholder="전화번호 입력" value="<?php $utils->display($response["data"]["phone_number"]);?>">
             </div>
             <div class="eight wide field required <?php if ($response["review"]) { echo(" disabled");}?>">
                 <label>이메일 주소 (Email)</label>
-                <input type="email" name="studentEmail" placeholder="이메일 주소" value="<?php $utils->display($response["data"]["email"]);?>">
+                <input type="email" name="studentEmail" placeholder="이메일 주소 입력" value="<?php $utils->display($response["data"]["email"]);?>">
             </div>
         </div>
         <div class="two fields">
             <div class="eight wide field required">
                 <label>비밀번호 (Password)</label>
-                <input type="password" name="studentPassword" placeholder="비밀번호">
+                <input type="password" name="studentPassword" placeholder="비밀번호 입력">
             </div>
             <div class="eight wide field">
                 <label>비밀번호 재입력 (Repeat Password)</label>
@@ -315,11 +315,11 @@ include_once("./header.php");
         <div class="two fields">
             <div class="eight wide field">
                 <label>보호자 이름 (Guardian)</label>
-                <input type="text" name="studentGuardianName" placeholder="보호자 성명" value="<?php $utils->display($response["data"]["guardian_name"]);?>">
+                <input type="text" name="studentGuardianName" placeholder="보호자 이름 입력" value="<?php $utils->display($response["data"]["guardian_name"]);?>">
             </div>
             <div class="eight wide field">
                 <label>보호자 전화번호 (Guardian Mobile)</label>
-                <input type="text" name="studentGuardianPhoneNumber" placeholder="보호자 연락처" value="<?php $utils->display($response["data"]["guardian_phone_number"]);?>">
+                <input type="text" name="studentGuardianPhoneNumber" placeholder="보호자 전화번호 입력" value="<?php $utils->display($response["data"]["guardian_phone_number"]);?>">
             </div>
         </div>
         <h4 class="ui dividing header" style="margin-top: 40px">기타</h4>

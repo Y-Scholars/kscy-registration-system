@@ -28,9 +28,14 @@ function process() {
         $review_mode = true;
     }
 
+    $delete_mode = false;
+    if (!empty($_GET["delete"]) && $_GET["delete"] == true) {
+        $delete_mode = true;
+    }
+
     // 권한이 없을 경우 로그인 페이지로 이동
-    if ($review_mode && empty($session->get_student_no())) {
-        header("Location: authentication.php?redirect=".base64_encode("application.php?review=true"));
+    if (($review_mode || $delete_mode) && empty($session->get_student_no())) {
+        header("Location: ./authentication.php?redirect=".base64_encode("application.php?review=true"));
         exit();
     }
 
@@ -43,20 +48,20 @@ function process() {
     // 각 페이지 프로세싱
     switch ($tab) {
         case "paper":
-            $response = process_paper($review_mode);
+            $response = process_paper($review_mode, $delete_mode);
             break;
         case "plan":
-            //$response = process_plan($review_mode);
+            $response = process_plan($review_mode, $delete_mode);
             break;
         case "mentoring":
-            //$response = process_mentoring($review_mode);
+            //$response = process_mentoring($review_mode, $delete_mode);
             break;
         case "camp":
-            //$response = process_camp($review_mode);
+            //$response = process_camp($review_mode, $delete_mode);
             break;
         default:
             $tab = "paper";
-            $response = process_paper($review_mode);
+            $response = process_paper($review_mode, $delete_mode);
     }
 
     // 사용 가능한 탭 읽어오기
@@ -114,6 +119,9 @@ if ($response["result"] == "success") {
     exit();
 } else if ($response["result"] == "not-exists") {
     header("Location: ./message.php?type=application-not-exists");
+    exit();
+} else if ($response["result"] == "delete") {
+    header("Location: ./message.php?type=application-delete");
     exit();
 }
 
@@ -189,7 +197,7 @@ include_once("./header.php");
                 echo(render_paper($response));
                 break;
             case "plan":
-                //render_plan($response);
+                echo(render_plan($response));
                 break;
             case "mentoring":
                 //render_mentoring($response);

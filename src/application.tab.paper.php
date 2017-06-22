@@ -11,11 +11,13 @@ require_once("./utils.php");
 require_once("./session.php");
 require_once("./strings.php");
 
-function process_paper($review_mode) {
+function process_paper($review_mode, $delete_mode) {
 
     global $db;
     global $session;
     global $utils;
+
+    $max_file_size = 1048576 * 50;
 
     // 변수로 POST 값들 읽어오기
     $user_paper_title = trim($_POST["paperTitle"]);
@@ -32,6 +34,26 @@ function process_paper($review_mode) {
                   empty($user_paper_research_field) || 
                   empty($user_paper_desired_session) || 
                   empty($user_paper_team_members));
+
+    // 삭제 모드라면
+    if ($delete_mode) {
+
+        $response = $db->in('kscy_papers')
+                        ->delete()
+                        ->where("team_leader", "=", $session->get_student_no())
+                        ->go();
+        
+        if ($response) {
+            $statistics = $db->in('kscy_statistics')
+                            ->update('value', '`value` - 1 ', true)
+                            ->where('key', '=', 'total_papers')
+                            ->go();
+
+            return array(
+                "result" => "delete"
+            );
+        }
+    }
 
     // 리뷰 모드라면, 서버로부터 데이터 로드
     if ($review_mode) {
@@ -90,9 +112,9 @@ function process_paper($review_mode) {
     $file_uploaded = false;
     if (!empty($user_paper_file["name"])) {
         $file_extension = pathinfo($user_paper_file["name"])['extension'];
-        $file_path = "./papers/" . $user_paper_team_leader . "." . $file_extension;
+        $file_path = "./files/papers/" . $user_paper_team_leader . "." . $file_extension;
 
-        if ($user_paper_file['size'] > 1048576 * 50) {
+        if ($user_paper_file['size'] > $max_file_size) {
             return array(
                 "result" => "warning",
                 "review" => $review_mode,
@@ -170,10 +192,10 @@ function process_paper($review_mode) {
     }
 
     return array(
-                "result" => "success",
-                "review" => $review_mode,
-                "data" => $paper_data
-            );
+        "result" => "success",
+        "review" => $review_mode,
+        "data" => $paper_data
+    );
 }
 
 function render_paper($response) {
@@ -181,30 +203,22 @@ function render_paper($response) {
     global $utils;
     global $strings;
 
-    if ($response["result"] == "success") { ?>
-        <script>window.location.href = "./message.php?type=application<?php echo($response["review"] ? "-review" : "");?>"; </script><?php
-        return;
-    } else if ($response["result"] == "error") { ?>
-        <script>window.location.href = "./message.php?type=error";</script><?php
-        return;
-    }
     if ($response["result"] == "warning") { ?>
         <div class="ui warning message"><?php echo($response["message"]); ?></div><?php
     } ?>
     <form class="ui form" method="post" enctype="multipart/form-data" >
-        <h4 class="ui dividing header" style="margin-top: 10px">논문 발표자 정보</h4>
+        <h4 class="ui dividing header" style="margin-top: 15px">논문 발표자 정보</h4>
         <div class="field required">
            <label>발표자 리스트 (Team Members)</label>
             <input type="hidden" id="paperTeamMembers" name="paperTeamMembers"  value="<?php $utils->display($response["data"]["team_members"]);?>">
             <div class="ui action input">
-                <input type="text" id="paperStudentEmail" placeholder="학생 등록 시 입력한 이메일 주소">
+                <input type="text" id="paperStudentEmail" placeholder="학생 등록 시 입력한 이메일 주소 입력">
                 <a class="ui button" id="paperAddStudent">학생 추가</a>
             </div>
             <div class="ui pointing blue basic label">
-                <p>발표자 추가를 위해서는 학생이 <u><a href="./student.php">학생 등록</a></u>되어 있어야 합니다. 리스트의 첫 번째에 위치한 학생이 팀장이 됩니다. (추후 수정 가능)</p>
+                <p>발표자 추가를 위해서는 학생이 <u><a href="./student.php">학생 등록</a></u>되어 있어야 하며, 리스트의 첫 번째에 위치한 학생이 팀장이 됩니다. (추후 수정 가능)</p>
             </div>
             <div class="ui middle aligned list" id="paperStudentsList">
-           
             <?php
             foreach ($response["data"]["team_member_data"] as $team_member_data) {?>
                 <div class="item">
@@ -224,13 +238,13 @@ function render_paper($response) {
         <h4 class="ui dividing header" style="margin-top: 40px">논문 정보</h4>
         <div class="field required">
             <label>논문 제목 (Paper Title)</label>
-            <input type="text" name="paperTitle" placeholder="제목" value="<?php $utils->display($response["data"]["title"]);?>">
+            <input type="text" name="paperTitle" placeholder="논문 제목 입력" value="<?php $utils->display($response["data"]["title"]);?>">
         </div>
         <div class="field required">
             <label>논문 파일 (Paper File)
                 <?php if (!empty($response["data"]["file"])) {
                     $file_extension = pathinfo($response["data"]["file"])['extension'];?>
-                <u><a href="<?php echo("download.php?type=papers&extension=".$file_extension);?>"> 다운로드</a></u>
+                <u><a href="<?php echo("download.php?type=paper&extension=".$file_extension);?>"> 다운로드</a></u>
                 <?php } ?>
             </label>
             <div class="ui fluid file input action">
@@ -244,7 +258,7 @@ function render_paper($response) {
         </div>
         <div class="field required">
             <label>연구 분야 (Research Field)</label>
-            <input type="text" name="paperResearchField" placeholder="연구 분야" value="<?php $utils->display($response["data"]["research_field"]);?>">
+            <input type="text" name="paperResearchField" placeholder="연구 분야 입력" value="<?php $utils->display($response["data"]["research_field"]);?>">
             <div class="ui pointing blue basic label">
                 <p>희망 참가 세션과는 별개로 본인이 생각하는 연구의 분야를 입력해 주세요.</p>
             </div>
@@ -265,7 +279,7 @@ function render_paper($response) {
         </div>
         <button class="ui button" type="submit" style="margin-top: 15px">지원서 <?php echo($response["review"] ? "수정" : "제출")?></button>
         <?php if ($response["review"]) {
-            echo('<a class="ui button" href="./application.delete.php?type=paper">지원서 삭제</a>');
+            echo('<a class="ui button" id="paperDelete">지원서 삭제</a>');
         } ?>
         <a class="ui button" href="./" >취소</a>
     </form>
@@ -273,7 +287,7 @@ function render_paper($response) {
     <script>
 
     var paperTeamMembers = [ <?php if ($response["review"]) { echo($response["data"]["team_members"]); } ?>];
-    var paperTeamLeader <?php if ($response["review"]) { echo("= ".$response["data"]["team_leader"]); } ?>;
+    var paperTeamLeader<?php if ($response["review"]) { echo(" = ".$response["data"]["team_leader"]); } ?>;
 
     $("#paperDesiredSession option[value='<?php echo($response["data"]["desired_session"]); ?>']").prop("selected", true);
     $('.ui.checkbox').checkbox();
@@ -292,17 +306,18 @@ function render_paper($response) {
         $.ajax({
             type: 'post',
             dataType: 'json',
-            url: './student-searcher.php',
-            data: {studentEmail:$('#paperStudentEmail').val()},
+            url: './student.ajax.php',
+            data: { action: "get-by-email", email:$('#paperStudentEmail').val() },
             success: function (data) {
-
                 $('#paperAddStudent').removeClass("disabled");
-
                 if (paperTeamMembers.indexOf(Number(data.no)) >= 0) {
                     alert("이미 추가된 학생입니다.");
                     return;
                 }
-
+                if (data.result == "error") {
+                    alert(data.message);
+                    return;
+                }
                 paperTeamMembers.push(Number(data.no));
                 var innerHTML = '<div class="item">'
                 innerHTML += '<div class="left floated content">'
@@ -311,7 +326,7 @@ function render_paper($response) {
                 innerHTML += '</div>'
                 innerHTML += '</div>'
                 innerHTML += '<div class="content">'
-                innerHTML += '<div class="header">'+data.name+'&nbsp;</div>'
+                innerHTML += '<div class="header">' + data.name + '&nbsp;</div>'
                 innerHTML += data.school + " " + data.grade + "학년"
                 innerHTML += '</div>'
                 innerHTML += '</div>'
@@ -324,7 +339,6 @@ function render_paper($response) {
                     var labelElement = '<div class="ui tiny horizontal label">팀장</div>';
                     var firstElement = $(".ui.icon.basic.button[no='"+paperTeamMembers[0]+"']").parent().parent().find(".content").find(".header");
                     firstElement.append(labelElement);
-
                 }
             },
             error: function (request, status, error) {
@@ -332,6 +346,12 @@ function render_paper($response) {
                 alert("학생을 찾을 수 없습니다. 등록된 학생인지 확인해 주세요.");
             }
         });
+    });
+
+    $('#paperDelete').on('click', function() {
+        if(confirm("정말 지원서를 삭제하시겠습니까?")) {
+            window.location.href = "./application.php?delete=true";
+        }
     });
 
     $('#paperStudentsList').on('click', '.ui.icon.basic.button', function() {
@@ -350,19 +370,17 @@ function render_paper($response) {
             var firstElement = $(".ui.icon.basic.button[no='"+paperTeamMembers[0]+"']").parent().parent().find(".content").find(".header");
             firstElement.append(labelElement);
         }
-    })
-
+    });
 
     $('.ui.file.input').find('input:text, .ui.button').on('click', function(e) {
         $(e.target).parent().find('input:file').click();
-    })
-    ;
+    });
 
     $('input:file', '.ui.file.input').on('change', function(e) {
         var file = $(e.target);
         var name = '';
-        for (var i=0; i<e.target.files.length; i++) {
-        name += e.target.files[i].name + ', ';
+        for (var i = 0; i < e.target.files.length; i++) {
+            name += e.target.files[i].name + ', ';
         }
         name = name.replace(/,\s*$/, '');
         $('input:text', file.parent()).val(name);
@@ -370,5 +388,3 @@ function render_paper($response) {
 
     </script>
 <?php } ?>
-
-
