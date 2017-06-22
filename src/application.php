@@ -6,7 +6,7 @@
  * 2017. 06. 22
  */
 
-//error_reporting(0);
+error_reporting(0);
 
 require_once("./db.php");
 require_once("./utils.php");
@@ -190,9 +190,8 @@ include_once("./header.php");
         } ?>
     </div>
 
-    <div class="ui bottom attached tab segment active">
-        <?php
-        switch ($response["tab"]) {
+    <div class="ui bottom attached segment">
+        <?php switch ($response["tab"]) {
             case "paper":
                 echo(render_paper($response));
                 break;
@@ -200,10 +199,10 @@ include_once("./header.php");
                 echo(render_plan($response));
                 break;
             case "mentoring":
-                render_mentoring($response);
+                echo(render_mentoring($response));
                 break;
             case "camp":
-                render_camp($response);
+                echo(render_camp($response));
                 break;
         } ?>
     </div>

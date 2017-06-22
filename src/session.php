@@ -5,7 +5,7 @@
  * Written By HyunJun Kim
  * 2017. 06. 15
  */
- 
+
 error_reporting(0);
 session_start();
 
@@ -23,12 +23,12 @@ class Session {
         $_SESSION["student_no"] = $student_no;
     }
 
-    public function set_admin_key($admin_key) {
-        $_SESSION["admin_key"] = $admin_key;
+    public function set_level($level) {
+        $_SESSION["level"] = $level;
     }
 
-    public function get_admin_key() {
-        return $_SESSION["admin_key"];
+    public function get_level() {
+        return isset($_SESSION["level"]) ? $_SESSION["level"] : 0;
     }
 }
 

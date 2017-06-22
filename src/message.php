@@ -67,6 +67,11 @@ function process() {
             $message_type = "success";
             $message_text = "마감일 전까지 지원서는 자유롭게 제출하실 수 있습니다.";
             break;
+        case "dashboard-error":
+            $message_title = "대시보드 엑세스에 실패하였습니다";
+            $message_type = "negative";
+            $message_text = "관리자 권한이 있는지 다시 확인해 주세요.";
+            break;
     }
 
     return array(

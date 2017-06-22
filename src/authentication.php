@@ -44,6 +44,7 @@ function process() {
     // 로그인 시도
     $response = $db->in('kscy_students')
                    ->select('no')
+                   ->select('level')
                    ->where('email', '=', $utils->purify($user_student_email))
                    ->where('password', '=', hash("sha256", $utils->purify($user_student_password)))
                    ->go_and_get();
@@ -55,12 +56,13 @@ function process() {
         );
     }
 
+    $session->set_level(intval($response["level"]));
     $session->set_student_no($response["no"]);
 
     return array(
-            "result" => "success",
-            "redirect" => $user_redirect
-        );
+        "result" => "success",
+        "redirect" => $user_redirect
+    );
 }
 
 $response = process();
