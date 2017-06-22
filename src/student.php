@@ -26,7 +26,7 @@ function process() {
 
     // 권한이 없을 경우 로그인 페이지로 이동
     if ($review_mode && empty($session->get_student_no())) {
-        header("Location: authentication.php?redirect=".base64_encode("student.php?review=true"));
+        header("Location: ./authentication.php?redirect=".base64_encode("student.php?review=true"));
         exit();
     }
 

@@ -82,7 +82,7 @@ function process() {
         }
     }
 
-    $data = array(
+    $counter = array(
         "total_students" => $total_students,
         "total_papers" => $total_papers,
         "total_plans" => $total_plans,
@@ -90,12 +90,32 @@ function process() {
         "total_camps" => $total_camps
     );
 
-    return array(
-        "result" => "success",
-        "data" => $data,
-        "tab" => $tab,
-        "no" => $no
-    );
+    switch ($tab) {
+        case "paper":
+            $response = process_paper();
+            break;
+        case "plan":
+            $response = process_plan();
+            break;
+        case "mentoring":
+            $response = process_mentoring();
+            break;
+        case "camp":
+            $response = process_camp();
+            break;
+        case "student":
+            $response = process_student();
+            break;
+        case "session":
+            $response = process_session();
+            break;
+    }
+
+    $response["tab"] = $tab;
+    $response["no"] = $no;
+    $response["counter"] = $counter;
+
+    return $response;
 }
 
 $response = process();
@@ -110,6 +130,68 @@ $title_english = "Dashboard";
 
 include_once("./header.php");
 ?>
+<div class="ui modal student">
+    <div class="header">학생 세부 정보</div>
+    <div class="content">
+        <table class="ui selectable definition celled sortable table">
+            <tbody>
+                <tr>
+                    <td>번호</td>
+                    <td id="studentNo">없음</td>
+                </tr>
+                <tr>
+                    <td>이름</td>
+                    <td id="studentName">없음</td>
+                </tr>
+                <tr>
+                    <td>성별</td>
+                    <td id="studentGender">없음</td>
+                </tr>
+                <tr>
+                    <td>학교</td>
+                    <td id="studentSchool">없음</td>
+                </tr>
+                <tr>
+                    <td>학년</td>
+                    <td id="studentGrade">없음</td>
+                </tr>
+                <tr>
+                    <td>이메일 주소</td>
+                    <td id="studentEmail">없음</td>
+                </tr>
+                <tr>
+                    <td>전화번호</td>
+                    <td id="studentPhone">없음</td>
+                </tr>
+                <tr>
+                    <td>보호자 이름</td>
+                    <td id="studentGuardianName">없음</td>
+                </tr>
+                <tr>
+                    <td>보호자 연락처</td>
+                    <td id="studentGuardianPhone">없음</td>
+                </tr>
+                <tr>
+                    <td>참가 경로</td>
+                    <td id="studentSurvey">없음</td>
+                </tr>
+                <tr>
+                    <td>자동 참가전환 여부</td>
+                    <td id="studentSwitch">없음</td>
+                </tr>
+                <tr>
+                    <td>등록 일시</td>
+                    <td id="studentTimestamp">없음</td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="ui basic button"><i class="icon write"></i>학생 정보 수정</button>
+        <button class="ui basic button"><i class="icon trash"></i>학생 삭제</button>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">닫기</div>
+    </div>
+</div>
 <div class="kscy-body">
 <div class="ui container">
     <div class="ui grid">
@@ -117,23 +199,23 @@ include_once("./header.php");
             <div class="ui vertical accordion menu fluid">
                 <a class="item<?php echo($response["tab"] == "student" ? " active" : "");?>" href="./dashboard.php?tab=student">
                     학생 탐색기
-                    <div class="ui blue left pointing label"><?php echo($response["data"]["total_students"]);?></div>
+                    <div class="ui blue left pointing label"><?php echo($response["counter"]["total_students"]);?></div>
                 </a>
                 <a class="item<?php echo($response["tab"] == "paper" ? " active" : "");?>" href="./dashboard.php?tab=paper">
                     논문 발표
-                    <div class="ui blue left pointing label"><?php echo($response["data"]["total_papers"]);?></div>
+                    <div class="ui blue left pointing label"><?php echo($response["counter"]["total_papers"]);?></div>
                 </a>
                 <a class="item<?php echo($response["tab"] == "plan" ? " active" : "");?>" href="./dashboard.php?tab=plan">
                     연구계획 발표
-                    <div class="ui blue left pointing label"><?php echo($response["data"]["total_plans"]);?></div>
+                    <div class="ui blue left pointing label"><?php echo($response["counter"]["total_plans"]);?></div>
                 </a>
                 <a class="item<?php echo($response["tab"] == "mentoring" ? " active" : "");?>" href="./dashboard.php?tab=mentoring">
                     멘토링 참가
-                    <div class="ui blue left pointing label"><?php echo($response["data"]["total_mentorings"]);?></div>
+                    <div class="ui blue left pointing label"><?php echo($response["counter"]["total_mentorings"]);?></div>
                 </a>
                 <a class="item<?php echo($response["tab"] == "camp" ? " active" : "");?>" href="./dashboard.php?tab=camp">
                     캠프 참가
-                    <div class="ui blue left pointing label"><?php echo($response["data"]["total_camps"]);?></div>
+                    <div class="ui blue left pointing label"><?php echo($response["counter"]["total_camps"]);?></div>
                 </a>
                 <div class="item<?php echo($response["tab"] == "session" ? " active" : "");?>">
                     <a class="active title">세션별 지원서 보기<i class="dropdown icon"></i></a>

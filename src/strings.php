@@ -6,7 +6,6 @@
  * 2017. 06. 22
  */
 
-
 $session_names = array(
     "1"=>"인문과학분야: 인문학세션",
     "17"=>"경영기업가정신분야: 경영학세션",
@@ -46,9 +45,29 @@ $survey_names = array(
     "6" => "기타"
 );
 
+$deposit_names = array(
+    "0" => "미납",
+    "1" => "조기",
+    "2" => "1차",
+    "3" => "2차",
+    "4" => "3차",
+    "5" => "4차",
+    "6" => "기타",
+);
+
+$approved_names = array(
+    "0" => "미분류",
+    "1" => "합격",
+    "2" => "불합격",
+    "3" => "추가합격",
+    "4" => "참가취소",
+);
+
 $strings = array(
     "session_names" => $session_names,
     "grade_names" => $grade_names,
-    "survey_names" => $survey_names
+    "survey_names" => $survey_names,
+    "deposit_names" => $deposit_names,
+    "approved_names" => $approved_names
 );
 ?>
