@@ -159,37 +159,6 @@ function render_plan($response) {
             }
         });
     });
-
-    $('.student.name').on("click", function() {
-        var self = this;
-        $(self).addClass("loading");
-        $.ajax({
-            type: 'post',
-            dataType: 'json',
-            url: './dashboard.ajax.php',
-            data: { action: "load", type: "student", no: $(self).data("no")},
-            success: function (data) {
-                $(self).removeClass("loading");
-                $("#studentNo").html(data.no);
-                $("#studentName").html(data.name);
-                $("#studentGender").html(data.gender == "male" ? "남자" : "여자");
-                $("#studentSchool").html(data.school);
-                $("#studentGrade").html(data.grade);
-                $("#studentEmail").html(data.email);
-                $("#studentPhone").html(data.phone_number);
-                $("#studentGuardianName").html(data.guardian_name);
-                $("#studentGuardianPhone").html(data.guardian_phone_number);
-                $("#studentSurvey").html(data.survey);
-                $("#studentSwitch").html(data.auto_switch == "1" ? "예" : "아니오");
-                $("#studentTimestamp").html(data.timestamp);
-                $('.ui.modal.student').modal('show');
-            },
-            error: function (request, status, error) {
-                $(self).removeClass("loading");
-                alert("데이터를 불러오지 못했습니다.");
-            }
-        });
-    });
     </script>
 <?php
 }

@@ -16,6 +16,7 @@ class Session {
 
     public function delete_student_no() {
         $_SESSION["student_no"] = "";
+        $_SESSION["level"] = "";
         session_destroy();
     }
 

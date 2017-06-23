@@ -18,8 +18,8 @@ require_once("./dashboard.tab.mentoring.php");
 require_once("./dashboard.tab.camp.php");
 require_once("./dashboard.tab.session.php");
 require_once("./dashboard.tab.student.php");
+require_once("./dashboard.tab.log.php");
 
-error_reporting(-1);
 function process() {
 
     global $db;
@@ -39,7 +39,7 @@ function process() {
 
     // 관리자 권한이 없다면
     if ($session->get_level() < 1)  {
-        if (empty($session->get_student_no())) {
+        if (!empty($session->get_student_no())) {
             header("Location: ./message.php?type=dashboard-error");
         } else {
             header("Location: ./authentication.php?redirect=".base64_encode("dashboard.php"));
@@ -113,6 +113,9 @@ function process() {
         case "session":
             $response = process_session($session_no);
             break;
+        case "log":
+            $response = process_log();
+            break;
     }
 
     $response["tab"] = $tab;
@@ -184,13 +187,22 @@ include_once("./header.php");
                     <td id="studentSwitch">없음</td>
                 </tr>
                 <tr>
+                    <td>권한</td>
+                    <td id="studentLevel">없음</td>
+                </tr>
+                <tr>
+                    <td>메모</td>
+                    <td id="studentMemo">없음</td>
+                </tr>
+                <tr>
                     <td>등록 일시</td>
                     <td id="studentTimestamp">없음</td>
                 </tr>
             </tbody>
         </table>
-        <button class="ui basic button"><i class="icon write"></i>학생 정보 수정</button>
-        <button class="ui basic button"><i class="icon trash"></i>학생 삭제</button>
+
+        <a id="studentModify" class="ui basic button" href="#"><i class="icon write"></i>학생 정보 수정</a>
+        <a id="studentDelete" class="ui basic button" href="#"><i class="icon trash"></i>학생 삭제</a>
     </div>
     <div class="actions">
         <div class="ui cancel button">닫기</div>
@@ -231,7 +243,9 @@ include_once("./header.php");
                         </div>
                     </div>
                 </div>
-                <a class="item">통계</a>
+                <a class="item<?php echo($response["tab"] == "log" ? " active" : "");?>" href="./dashboard.php?tab=log">
+                    작업 로그
+                </a>
                 <a class="item">방 배치</a>
             </div>
         </div>
@@ -256,6 +270,9 @@ include_once("./header.php");
                 case "session":
                     echo(render_session($response));
                     break;
+                case "log":
+                    echo(render_log($response));
+                    break;
             } ?>
             </div>
         </div>
@@ -264,6 +281,38 @@ include_once("./header.php");
 </div>
 <script>
 $('.ui.accordion').accordion();
+$('.student.name').on("click", function() {
+    var self = this;
+    $(self).addClass("loading");
+    $.ajax({
+        type: 'post',
+        dataType: 'json',
+        url: './dashboard.ajax.php',
+        data: { action: "load", type: "student", no: $(self).data("no")},
+        success: function (data) {
+            $(self).removeClass("loading");
+            $("#studentNo").html(data.no);
+            $("#studentName").html(data.name);
+            $("#studentGender").html(data.gender == "male" ? "남자" : "여자");
+            $("#studentSchool").html(data.school);
+            $("#studentGrade").html(data.grade);
+            $("#studentEmail").html(data.email);
+            $("#studentPhone").html(data.phone_number);
+            $("#studentGuardianName").html(data.guardian_name);
+            $("#studentGuardianPhone").html(data.guardian_phone_number);
+            $("#studentSurvey").html(data.survey);
+            $("#studentMemo").html(data.memo);
+            $("#studentLevel").html(data.level);
+            $("#studentTimestamp").html(data.timestamp);
+            $("#studentModify").attr("href", "./student.php?review=true&no=" + data.no);
+            $('.ui.modal.student').modal('show');
+        },
+        error: function (request, status, error) {
+            $(self).removeClass("loading");
+            alert("데이터를 불러오지 못했습니다.");
+        }
+    });
+});
 </script>
 <?php
 include_once("./footer.php");

@@ -67,7 +67,10 @@ function process() {
             break;
         case "student":
             processor_student($excel_data);
-            break;       
+            break;
+        case "log":
+            processor_log($excel_data);
+            break;
     }
     return array(
         "result" => "success",
@@ -488,6 +491,42 @@ function processor_student($excel_data) {
             $i++;
         
     }
+}
+
+function processor_log($excel_data) {
+
+    global $db;
+    global $strings;
+
+    $logs = $db->in('kscy_logs')
+                       ->select("*")    
+                       ->go_and_get_all();
+    if (!$logs) {
+        exit();
+    }
+
+    $excel_data->setActiveSheetIndex(0)
+               ->setCellValue("A1", "번호")
+               ->setCellValue("B1", "작업자")
+               ->setCellValue("C1", "대상")
+               ->setCellValue("D1", "행동")
+               ->setCellValue("E1", "데이터")
+               ->setCellValue("F1", "IP")
+               ->setCellValue("G1", "작업 시간");
+
+    $excel_data->getActiveSheet()->setTitle('작업 로그');
+    $i = 2;
+    foreach ($logs as $log) {
+        $excel_data->setActiveSheetIndex(0)
+                   ->setCellValue("A".$i, $log["no"])
+                   ->setCellValue("B".$i, $log["user"])
+                   ->setCellValue("C".$i, $log["target_user"])
+                   ->setCellValue("D".$i, $log["action"])
+                   ->setCellValue("E".$i, $log["data"])
+                   ->setCellValue("F".$i, $log["ip"])
+                   ->setCellValue("G".$i, $log["timestamp"]);
+        $i++;
+    }    
 }
 
 $response = process();

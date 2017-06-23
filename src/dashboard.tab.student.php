@@ -29,44 +29,6 @@ function process_student() {
     $students = $db->in('kscy_students')
                         ->select("*")    
                         ->go_and_get_all();
-    
-    foreach ($students as &$student) {
-
-        // 지원한 세션 검색
-        $query = "SELECT `no` ,  'kscy_mentorings' AS table_name FROM  `kscy_mentorings` ";
-        $query .= "WHERE FIND_IN_SET(  '".$student["no"]."',  `kscy_mentorings`.`team_members` ) > 0 UNION ";
-        $query .="SELECT `no` ,  'kscy_camps' AS table_name FROM  `kscy_camps` ";
-        $query .="WHERE FIND_IN_SET(  '".$student["no"]."',  `kscy_camps`.`team_members` ) > 0 UNION ";
-        $query .="SELECT `no` ,  'kscy_papers' AS table_name FROM  `kscy_papers` ";
-        $query .="WHERE FIND_IN_SET(  '".$student["no"]."',  `kscy_papers`.`team_members` ) > 0 UNION ";
-        $query .="SELECT `no` ,  'kscy_plans' AS table_name FROM  `kscy_plans` ";
-        $query .="WHERE FIND_IN_SET(  '".$student["no"]."',  `kscy_plans`.`team_members` ) > 0 ";
-
-        //$applied_tracks_data = $db->custom($query);
-        $applied_tracks_data = null;
-        $applied_tracks = array("엑셀에서 확인 요망");
-
-        if ($applied_tracks_data) {
-            foreach($applied_tracks_data as $row) {
-                switch ($row["table_name"]) {
-                    case "kscy_mentorings":
-                        array_push($applied_tracks, "멘토링");
-                        break;
-                    case "kscy_camps":
-                        array_push($applied_tracks, "캠프");
-                        break;
-                    case "kscy_papers":
-                        array_push($applied_tracks, "논문 발표");
-                        break;
-                    case "kscy_plans":
-                        array_push($applied_tracks, "연구계획 발표");
-                        break;
-                }
-            }
-        }
-        $student["applied_tracks"] = $applied_tracks;
-    }
-    unset($student);
 
     return array(
         "result" => "success",
@@ -98,7 +60,7 @@ function render_student($response) {
         <?php
         $count = 1;
         foreach ($response["data"] as $student) {?>
-            <tr>
+            <tr class="<?php echo($student["tag"]);?>">
                 <td><?php echo($student["no"]);?></td>
                 <td><a class="name student" data-no="<?php echo($student["no"]);?>"><?php echo($student["name"]);?></a></td>
                 <td><?php echo($student["gender"] == "male" ? "남자" : "여자");?></td>
@@ -131,38 +93,6 @@ function render_student($response) {
             }
         });
     });
-
-    $('.student.name').on("click", function() {
-        var self = this;
-        $(self).addClass("loading");
-        $.ajax({
-            type: 'post',
-            dataType: 'json',
-            url: './dashboard.ajax.php',
-            data: { action: "load", type: "student", no: $(self).data("no")},
-            success: function (data) {
-                $(self).removeClass("loading");
-                $("#studentNo").html(data.no);
-                $("#studentName").html(data.name);
-                $("#studentGender").html(data.gender == "male" ? "남자" : "여자");
-                $("#studentSchool").html(data.school);
-                $("#studentGrade").html(data.grade);
-                $("#studentEmail").html(data.email);
-                $("#studentPhone").html(data.phone_number);
-                $("#studentGuardianName").html(data.guardian_name);
-                $("#studentGuardianPhone").html(data.guardian_phone_number);
-                $("#studentSurvey").html(data.survey);
-                $("#studentSwitch").html(data.auto_switch == "1" ? "예" : "아니오");
-                $("#studentTimestamp").html(data.timestamp);
-                $('.ui.modal.student').modal('show');
-            },
-            error: function (request, status, error) {
-                $(self).removeClass("loading");
-                alert("데이터를 불러오지 못했습니다.");
-            }
-        });
-    });
-
     </script>
 <?php
 }

@@ -63,6 +63,15 @@ function process() {
                         ->update($user_key, $user_value)
                         ->where('no', '=', $user_no)
                         ->go();
+
+        $log = $db->in('kscy_logs')
+                  ->insert('user', $session->get_student_no())
+                  ->insert('target_user', $user_no)
+                  ->insert('action', "update status")
+                  ->insert('data',  $user_key . "=" . $user_value)
+                  ->insert('ip', $_SERVER['REMOTE_ADDR'])
+                  ->go();
+
         if ($response) {
             return $response;
         }               

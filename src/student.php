@@ -24,10 +24,29 @@ function process() {
         $review_mode = true;
     }
 
-    // 권한이 없을 경우 로그인 페이지로 이동
-    if ($review_mode && empty($session->get_student_no())) {
-        header("Location: ./authentication.php?redirect=".base64_encode("student.php?review=true"));
-        exit();
+    $student_no = -1;
+    if (!empty($_GET["no"])) {
+        $student_no = intval($_GET["no"]);
+    }
+
+    if ($review_mode) {
+
+        // 관리자 권한으로 편집
+        if ($student_no >= 0) {
+            $is_admin = true;
+            if ($session->get_level() < 1)  {
+                header("Location: ./authentication.php?redirect=".base64_encode("student.php?review=true"));
+                exit();
+            }
+        } 
+
+        // 스스로 편집
+        else {
+            if (empty($session->get_student_no())) {
+                header("Location: ./authentication.php?redirect=".base64_encode("student.php?review=true"));
+                exit();
+            }
+        }
     }
 
     // 변수로 POST 값들 읽어오기
@@ -41,6 +60,8 @@ function process() {
     $user_student_guardian_name = $_POST["studentGuardianName"];
     $user_student_guardian_phone_number = $_POST["studentGuardianPhoneNumber"];
     $user_student_survey = $_POST["studentSurvey"];
+    $user_student_tag = $_POST["studentTag"];
+    $user_student_memo = $_POST["studentMemo"];
     $user_student_switch_option = $_POST["studentSwitchOption"] == "yes" ? "1" : "0";
     
     // POST 값들의 유효성을 체크
@@ -58,19 +79,8 @@ function process() {
 
         // 로그인된 정보로부터 불러오기
         $student_data = $db->in('kscy_students')
-                           ->select('no')
-                           ->select('name')
-                           ->select('school')
-                           ->select('grade')
-                           ->select('phone_number')
-                           ->select('email')
-                           ->select('password')
-                           ->select('gender')
-                           ->select('guardian_name')
-                           ->select('guardian_phone_number')
-                           ->select('survey')
-                           ->select('auto_switch')
-                           ->where('no', '=', $session->get_student_no())
+                           ->select('*')
+                           ->where('no', '=', $is_admin ? $student_no : $session->get_student_no())
                            ->go_and_get();
 
         if (!$student_data) {
@@ -85,6 +95,7 @@ function process() {
     if (!$is_try) {
         return array(
             "result" => "pending",
+            "admin" => $is_admin,
             "review" => $review_mode,
             "data" => $student_data
         );
@@ -94,6 +105,7 @@ function process() {
     if ($is_try && !$is_valid) {
         return array(
             "result" => "warning",
+            "admin" => $is_admin,
             "review" => $review_mode,
             "message" => "올바른 값이 전달되지 않았습니다."
         );
@@ -106,18 +118,40 @@ function process() {
                        ->update('school', $utils->purify($user_student_school_name))
                        ->update('grade', $utils->purify($user_student_school_grade))
                        ->update('phone_number', $utils->purify($user_student_phone_number))
-                       ->update('password', hash("sha256", $utils->purify($user_student_password)))
                        ->update('gender', $utils->purify($user_student_gender))
                        ->update('guardian_name', $utils->purify($user_student_guardian_name))
                        ->update('guardian_phone_number', $utils->purify($user_student_guardian_phone_number))
                        ->update('survey', $utils->purify($user_student_survey))
                        ->update('auto_switch', $utils->purify($user_student_switch_option))
-                       ->where('no', '=', $session->get_student_no())
-                       ->go();
+                       ->where('no', '=', $is_admin >= 0 ? $student_no : $session->get_student_no());
+        
+        // 관리자 권한으로 수정했을 경우
+        if ($is_admin) {
+            $response->update('memo', $utils->purify($user_student_memo));
+            $response->update('tag', $utils->purify($user_student_tag));
+            // 입력 비밀번호가 바뀌지 않았다면 비밀번호를 변경하지 않음
+            if ($user_student_password != "admin") {
+                $response->update('password', hash("sha256", $utils->purify($user_student_password)));
+            }
+        } else {
+            $response->update('password', hash("sha256", $utils->purify($user_student_password)));
+        }
+        $response = $response->go();
+
+        if ($is_admin) {
+            $log = $db->in('kscy_logs')
+                      ->insert('user', $session->get_student_no())
+                      ->insert('target_user', $student_no)
+                      ->insert('action', "modify info")
+                      ->insert('data',  "")
+                      ->insert('ip', $_SERVER['REMOTE_ADDR'])
+                      ->go();
+        }
 
         if (!$response) {
             return array(
                 "result" => "error",
+                "admin" => $is_admin,
                 "review" => $review_mode,
                 "message" => "업데이트 도중 에러가 발생하였습니다."
             );
@@ -137,6 +171,7 @@ function process() {
         if ($response) {
             return array(
                 "result" => "warning",
+                "admin" => $is_admin,
                 "review" => $review_mode,
                 "message" => "이미 등록된 이메일 주소입니다."
             );
@@ -164,16 +199,24 @@ function process() {
         if (!$response) {
             return array(
                 "result" => "error",
+                "admin" => $is_admin,
                 "review" => $review_mode,
                 "message" => "학생 등록 도중 에러가 발생하였습니다."
             );
         }
     }
 
+    // 관리자 모드라면 대시보드로 이동
+    if ($is_admin) {
+        header("Location: ./dashboard.php");
+        exit();
+    }
+
     $session->delete_student_no();
 
     return array(
                 "result" => "success",
+                "admin" => $is_admin,
                 "review" => $review_mode,
                 "data" => $student_data
             );
@@ -281,13 +324,28 @@ include_once("./header.php");
         <div class="two fields">
             <div class="eight wide field required">
                 <label>비밀번호 (Password)</label>
-                <input type="password" name="studentPassword" placeholder="비밀번호 입력">
+                <input type="password" name="studentPassword" placeholder="비밀번호 입력" value="<?php echo($response["admin"] ? "admin" : "");?>">
             </div>
             <div class="eight wide field">
                 <label>비밀번호 재입력 (Repeat Password)</label>
-                <input type="password" name="studentPasswordRepeat" placeholder="비밀번호 재입력">
+                <input type="password" name="studentPasswordRepeat" placeholder="비밀번호 재입력" value="<?php echo($response["admin"] ? "admin" : "");?>">
             </div>
         </div>
+        <?php if ($response["admin"]) { ?>
+        <h4 class="ui dividing header" style="margin-top: 40px">관리자 기입 사항</h4>
+        <div class="field">
+            <label>태그 (Tag)</label>
+            <select class="ui fluid dropdown" name="studentTag" id="studentTag">
+                <?php foreach($strings["tag_names"] as $key => $value) { ?>
+                <option value="<?php echo($key);?>"><?php echo($value);?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="field">
+            <label>메모 (Memo)</label>
+            <textarea name="studentMemo"><?php $utils->display($response["data"]["memo"]);?></textarea>
+        </div>
+        <?php } ?>
         <h4 class="ui dividing header" style="margin-top: 40px">추가 정보 <small><em>(캠프 참여 예정인 학생만 작성)</em></small></h4>
         <?php
         $gender_option = true;
@@ -358,7 +416,7 @@ include_once("./header.php");
         </div>
         <div class="required inline field">
             <div class="ui checkbox">
-                <input type="checkbox" tabindex="1" name="studentTerms" class="hidden">
+                <input type="checkbox" tabindex="1" name="studentTerms" class="hidden"<?php echo($response["review"] ? " checked" : "");?>>
                 <label>본인은 KSCY <a onclick="$('#term1').modal('show')">개인정보처리방침</a>에 동의합니다</label>
             </div>
         </div>
@@ -372,6 +430,7 @@ include_once("./header.php");
 
 $("#studentSchoolGrade option[value='<?php echo($response["data"]["grade"]); ?>']").prop("selected", true);
 $("#studentSurvey option[value='<?php echo($response["data"]["survey"]); ?>']").prop("selected", true);
+$("#studentTag option[value='<?php echo($response["data"]["tag"]); ?>']").prop("selected", true);
 
 $('.ui.modal').modal();
 $('.ui.checkbox').checkbox();

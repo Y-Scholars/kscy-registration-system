@@ -45,6 +45,13 @@ $survey_names = array(
     "6" => "기타"
 );
 
+$tag_names = array(
+    "" => "없음",
+    "positive" => "긍정",
+    "negative" => "부정",
+    "warning" => "중립"
+);
+
 $deposit_names = array(
     "0" => "미납",
     "1" => "조기",
@@ -68,6 +75,7 @@ $strings = array(
     "grade_names" => $grade_names,
     "survey_names" => $survey_names,
     "deposit_names" => $deposit_names,
-    "approved_names" => $approved_names
+    "approved_names" => $approved_names,
+    "tag_names" => $tag_names
 );
 ?>
