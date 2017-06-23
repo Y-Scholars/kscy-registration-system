@@ -107,7 +107,7 @@ function render_session($response) {
             $team_members_no = count($application["team_members_data"]);
 
             foreach ($application["team_members_data"] as $team_member_data) {?>
-                <tr>
+                <tr class="<?php echo($team_member_data["tag"]);?>">
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($count);?></td>
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($application["title"]);?></td>
@@ -169,7 +169,7 @@ function render_session($response) {
             $team_members_no = count($application["team_members_data"]);
 
             foreach ($application["team_members_data"] as $team_member_data) {?>
-                <tr>
+                <tr class="<?php echo($team_member_data["tag"]);?>">
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($count);?></td>
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($application["title"]);?></td>
@@ -229,7 +229,7 @@ function render_session($response) {
             $team_members_no = count($application["team_members_data"]);
 
             foreach ($application["team_members_data"] as $team_member_data) {?>
-                <tr>
+                <tr class="<?php echo($team_member_data["tag"]);?>">
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($count);?></td>
                 <?php } ?>

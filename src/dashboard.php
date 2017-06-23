@@ -246,7 +246,7 @@ include_once("./header.php");
                 <a class="item<?php echo($response["tab"] == "log" ? " active" : "");?>" href="./dashboard.php?tab=log">
                     작업 로그
                 </a>
-                <a class="item">방 배치</a>
+                <a class="item">통계</a>
             </div>
         </div>
         <div class="twelve wide stretched column">
