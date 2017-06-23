@@ -25,10 +25,12 @@ function process_paper() {
         );
     }
 
+    // 데이터 불러오기
     $applications = $db->in('kscy_papers')
                         ->select("*")    
                         ->go_and_get_all();
     
+    // 팀원 정보도 함께 불러와서 할당
     foreach ($applications as &$application) {
 
         $team_members_no = explode(",", $application["team_members"]);
@@ -54,22 +56,20 @@ function render_paper($response) {
     global $strings;
 
     ?>
-
-
     <h2 class="ui header">논문 발표 지원서</h2>
     <a class="ui basic button" href="./dashboard.export.php?type=paper"><i class="icon download"></i>엑셀로 내보내기...</a>
     <table class="ui structured celled table">
         <thead>
             <tr>
-            <th>#</th>
-            <th class="three wide">제목</th>
-            <th class="two wide">분야</th>
-            <th class="two wide">희망 세션</th>
-            <th class="two wide">이름</th>
-            <th>학교</th>
-            <th class="two wide">참가비</th>
-            <th>파일</th>
-            <th class="two wide">합격 여부</th>
+                <th>#</th>
+                <th class="three wide">제목</th>
+                <th class="two wide">분야</th>
+                <th class="two wide">희망 세션</th>
+                <th class="two wide">이름</th>
+                <th>학교</th>
+                <th class="two wide">참가비</th>
+                <th>파일</th>
+                <th class="two wide">합격 여부</th>
             </tr>
         </thead>
         <tbody>
@@ -89,7 +89,7 @@ function render_paper($response) {
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($strings["session_names"][$application["desired_session"]]);?></td>
                 <?php } ?>
                 <?php if ($team_member_data["no"] == $application["team_leader"]) { ?>
-                    <td><a class="name student" data-no="<?php echo($team_member_data["no"]);?>"><?php echo($team_member_data["name"]);?></a><div class="ui tiny horizontal label">팀장</div></td>
+                    <td><a class="name student" data-no="<?php echo($team_member_data["no"]);?>"><?php echo($team_member_data["name"]);?></a> <div class="ui tiny horizontal label">팀장</div></td>
                 <?php } else { ?>
                     <td><a class="name student" data-no="<?php echo($team_member_data["no"]);?>"><?php echo($team_member_data["name"]);?></a></td>
                 <?php } ?>
@@ -185,7 +185,6 @@ function render_paper($response) {
                 $('.ui.modal.student').modal('show');
             },
             error: function (request, status, error) {
-                console.log(status)
                 $(self).removeClass("loading");
                 alert("데이터를 불러오지 못했습니다.");
             }

@@ -39,7 +39,11 @@ function process() {
 
     // 관리자 권한이 없다면
     if ($session->get_level() < 1)  {
-        header("Location: ./authentication.php?redirect=".base64_encode("dashboard.php"));
+        if (empty($session->get_student_no())) {
+            header("Location: ./message.php?type=dashboard-error");
+        } else {
+            header("Location: ./authentication.php?redirect=".base64_encode("dashboard.php"));
+        }
         exit();
     }
 
