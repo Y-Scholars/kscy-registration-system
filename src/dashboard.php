@@ -32,9 +32,9 @@ function process() {
         $tab = trim($_GET["tab"]);
     }
 
-    $no = "1";
+    $session_no = "1";
     if (!empty($_GET["no"])) {
-        $no = trim($_GET["no"]);
+        $session_no = trim($_GET["no"]);
     }
 
     // 관리자 권한이 없다면
@@ -111,12 +111,12 @@ function process() {
             $response = process_student();
             break;
         case "session":
-            $response = process_session();
+            $response = process_session($session_no);
             break;
     }
 
     $response["tab"] = $tab;
-    $response["no"] = $no;
+    $response["session_no"] = $session_no;
     $response["counter"] = $counter;
 
     return $response;
@@ -226,7 +226,7 @@ include_once("./header.php");
                     <div class="content active">
                         <div class="ui ordered link list">
                         <?php foreach ($strings["session_names"] as $key => $value) {
-                            echo ('<a class="item'.(($response["no"] == $key && $response["tab"] == "session" )? " active" : "").'" href="./dashboard.php?tab=session&no='.$key.'">'.$value.'</a>');
+                            echo ('<a class="item'.(($response["session_no"] == $key && $response["tab"] == "session" )? " active" : "").'" href="./dashboard.php?tab=session&no='.$key.'">'.$value.'</a>');
                         } ?>
                         </div>
                     </div>

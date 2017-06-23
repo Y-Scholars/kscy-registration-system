@@ -96,11 +96,7 @@ function render_camp($response) {
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($count);?></td>
                 <?php } ?>
-                <?php if ($team_member_data["no"] == $application["team_leader"]) { ?>
-                    <td><a class="name student" data-no="<?php echo($team_member_data["no"]);?>"><?php echo($team_member_data["name"]);?></a> <div class="ui tiny horizontal label">팀장</div></td>
-                <?php } else { ?>
                     <td><a class="name student" data-no="<?php echo($team_member_data["no"]);?>"><?php echo($team_member_data["name"]);?></a></td>
-                <?php } ?>
                     <td><?php echo(mb_strimwidth($team_member_data["school"], 0, 25, '...'));?></td>
                     <td>
                         <select class="ui dropdown deposit fluid" data-no="<?php echo($team_member_data["no"]);?>">
