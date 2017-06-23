@@ -30,21 +30,21 @@ function process_session($session_no) {
                         ->select("*")
                         ->where("desired_session", "=", $session_no)
                         ->go_and_get_all();
-    $papers_data = _appendTeamMembersData($papers_data);
+    $papers_data = _append_team_members_data($papers_data);
 
     // 데이터 불러오기: 연구계획
     $plans_data = $db->in('kscy_plans')
                         ->select("*")
                         ->where("desired_session", "=", $session_no)
                         ->go_and_get_all();
-    $plans_data = _appendTeamMembersData($plans_data);
+    $plans_data = _append_team_members_data($plans_data);
     
     // 데이터 불러오기: 멘토링
     $mentorings_data = $db->in('kscy_mentorings')
                         ->select("*")
                         ->where("desired_session", "=", $session_no)
                         ->go_and_get_all();
-    $mentorings_data = _appendTeamMembersData($mentorings_data);
+    $mentorings_data = _append_team_members_data($mentorings_data);
 
     return array(
         "result" => "success",
@@ -55,7 +55,7 @@ function process_session($session_no) {
     );
 }
 
-function _appendTeamMembersData($applications) {
+function _append_team_members_data($applications) {
 
     global $db;
 
