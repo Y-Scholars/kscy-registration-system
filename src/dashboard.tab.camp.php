@@ -57,7 +57,7 @@ function render_camp($response) {
 
     ?>
     <div class="ui modal application">
-        <div class="header">멘토링 지원서</div>
+        <div class="header">캠프 지원서</div>
         <div class="content">
             <h4 class="ui header">자기소개</h4>
             <p id="studentBio"></p>
