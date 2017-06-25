@@ -58,7 +58,7 @@ function render_plan($response) {
     ?>
     <h2 class="ui header">연구계획 발표 지원서</h2>
     <a class="ui basic button" href="./dashboard.export.php?type=plan"><i class="icon download"></i>엑셀로 내보내기...</a>
-    <a class="ui basic button" href="./dashboard.download.php?type=plan"><i class="icon download"></i>전체 지원서 내려받기...</a>
+    <a class="ui basic button" href="./download.php?type=plans-all"><i class="icon download"></i>전체 지원서 내려받기...</a>
     <table class="ui structured celled table">
         <thead>
             <tr>
@@ -104,7 +104,7 @@ function render_plan($response) {
                     </td>
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>">
-                        <a class="ui icon button fluid" href="<?php echo($application["file"]);?>"><i class="icon download"></i></a>
+                        <a class="ui icon button fluid" href="./download.php?type=plan&no=<?php echo($application["no"]);?>"><i class="icon download"></i></a>
                     </td>
                     <td rowspan="<?php echo($team_members_no);?>">
                     <select class="ui dropdown application fluid" data-no="<?php echo($application["no"]);?>">

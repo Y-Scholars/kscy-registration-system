@@ -28,36 +28,9 @@ function process() {
         );
     }
 
-    $type = $_GET["type"];
+    $user_type = $_GET["type"];
 
-    switch ($type) {
-        case "papers-all":
-            $type_name = "논문";
-            break;
-        case "plans-all":
-            $type_name = "연구계획";
-            break;
-        case "papers-session":
-            $type_name = "논문";
-            break;
-        case "plans-session":
-            $type_name = "연구계획";
-            break;
-        case "paper":
-            $type_name = "논문";
-            break;
-        case "plan":
-            $type_name = "연구계획";
-            break;
-        default:
-            return array(
-                "result" => "error",
-                "message" => "잘못된 파라미터가 전송되었습니다." 
-            );
-    }
-
-
-    if ($type != "paper" && $type != "plan") {
+    if ($user_type == "papers-all" || $user_type == "plans-all" || $user_type == "session") {
 
         // 관리자 권한 체크
         if ($session->get_level() < 1)  {
@@ -66,119 +39,171 @@ function process() {
                 "message" => "접근 권한이 없습니다." 
             );
         }
+
+        // 세션 넘버 체크
+        if ($user_type == "session") {
+            if (!isset($_GET["no"])) {
+                return array(
+                    "result" => "error",
+                    "message" => "파라미터가 충분하지 않습니다." 
+                );
+            }
+            $session_no = $_GET["no"];
+        }
         
-        $zip_name = $type . "s";
+        $zip_path = "data.zip";
         $zip_data = new ZipArchive;
-        $zip_data->open($zip_name . ".zip", ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip_data->open($zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         // 지원서 정보 불러오기
-        $applications = $db->in('kscy_' .$type. 's')
-                        ->select('*')
-                        ->go_and_get_all();
+        for ($i = 0; $i < 2; $i++) {
 
-        foreach ($applications as $application) {
-            
-            // 팀장 정보 불러오기
-            $team_leader = $application["team_leader"];
-            $team_leader_data = $db->in('kscy_students')
-                                ->select("*")
-                                ->where("no", "=", $team_leader)
-                                ->go_and_get();
-
-            if (!$team_leader_data) {
+            if ($user_type == "papers-all" && $i == 1) {
                 continue;
             }
-            $file_path = $application["file"];
-            $file_extension = pathinfo($file_path)['extension'];
-            $file_name = $strings["session_names"][$application["desired_session"]] . 
-                        "_" . $type_name . 
-                        "_" . $team_leader_data["name"] .
-                        "_" . mb_strimwidth($application["title"], 0, 15, '...');
-            
-            $zip_data->addFile($file_path, $file_name . $file_extension);
+
+            if ($user_type == "plans-all" && $i == 0) {
+                continue;
+            }
+
+            $db->in($i == 0 ? "kscy_papers" : "kscy_plans")->select('*');
+
+            if ($user_type == "session") {
+                $db->where("desired_session", "=", $session_no);
+            }
+            $applications = $db->go_and_get_all();
+
+            foreach ($applications as $application) {
+
+                $application_file = load_application_file($application, $i == 0 ? "논문" : "연구계획");
+
+                if (empty($application_file)) {
+                    continue;
+                }
+                $zip_data->addFile($application_file["file_path"], $application_file["file_name"] . "." . $application_file["file_extension"]);
+            }
         }
+
         $zip_data->close();
 
         return array(
             "result" => "success",
-            "type" => $type,
-            "file" => $zip_data
+            "file_path" => $zip_path,
+            "file_name" => "data",
+            "file_extension" => "zip"
         );
     }
 
-    else {
+    else if ($user_type == "paper" || $user_type == "plan") {
 
-        // 로그인 체크
-        if (!empty($session->get_student_no())) {
-            return array(
-                "result" => "error",
-                "message" => "접근 권한이 없습니다." 
-            );
+        // 세션 넘버 체크
+        if (isset($_GET["no"])) {
+            $application_no = $_GET["no"];
+        }
+        
+        if (!empty($application_no)) {
+            // 관리자 권한 체크
+            if ($session->get_level() < 1)  {
+                return array(
+                    "result" => "error",
+                    "message" => "접근 권한이 없습니다." 
+                );
+            }
+        } else {
+            // 로그인 체크
+            if (empty($session->get_student_no())) {
+                return array(
+                    "result" => "error",
+                    "message" => "접근 권한이 없습니다." 
+                );
+            }
         }
 
         // 지원서 정보 불러오기
-        $applications = $db->in('kscy_' .$type. 's')
-                           ->select('*')
-                           ->where("no", "=", $session->get_student_no())
-                           ->go_and_get();
+        $db->in('kscy_' .$user_type. 's')->select('*');
 
-        // 팀장 정보 불러오기
-        $team_leader = $application["team_leader"];
-        $team_leader_data = $db->in('kscy_students')
-                                ->select("*")
-                                ->where("no", "=", $team_leader)
-                                ->go_and_get();
+        if (empty($application_no)) {
+            $db->where("team_leader", "=", $session->get_student_no());
+        } else {
+            $db->where("no", "=", $application_no);
+        }
 
-        $file_path = $application["file"];
-        $file_extension = pathinfo($file_path)['extension'];
-        $file_name = $strings["session_names"][$application["desired_session"]] . 
-                    "_" . $type_name . 
-                    "_" . $team_leader_data["name"] .
-                    "_" . mb_strimwidth($application["title"], 0, 15, '...');
+        $application = $db->go_and_get();
+
+        $application_file = load_application_file($application, $user_type == "paper" ? "논문" : "연구계획");
+
+        if (empty($application_file)) {
+            return array(
+                "result" => "error",
+                "message" => "파일이 존재하지 않습니다."  . $db->rq()
+            );
+        }
 
         return array(
             "result" => "success",
-            "type" => $type,
-            "file" => $file_path,
-            "file_name" => $file_name . $file_extension
+            "file_path" => $application_file["file_path"],
+            "file_name" => $application_file["file_name"],
+            "file_extension" => $application_file["file_extension"],
         );
     }
+
+    return array(
+        "result" => "error",
+        "message" => "파라미터가 유효하지 않습니다." 
+    );
+}
+
+function load_application_file($application, $application_type) {
+
+    global $db;
+    global $strings;
+
+    // 팀장 정보 불러오기
+    $team_leader = $application["team_leader"];
+    $team_leader_data = $db->in('kscy_students')
+                            ->select("*")
+                            ->where("no", "=", $team_leader)
+                            ->go_and_get();
+
+    $file_path = $application["file"];
+
+    if (!file_exists($file_path)) {
+        return null;
+    }
+
+    $file_extension = pathinfo($file_path)['extension'];
+    $file_name = str_replace(":", "_", str_replace(" ", "", $strings["session_names"][$application["desired_session"]] . 
+                "_" . $application_type . 
+                "_" . $team_leader_data["name"] .
+                "_" . mb_strimwidth($application["title"], 0, 15, '...')));
+    
+    return array(
+        "file_path" => $file_path,
+        "file_name" => $file_name,
+        "file_extension" => $file_extension
+    );
 }
 
 $response = process();
 
 if ($response["result"] == "error") {
-    exit();
+    exit($response["message"]);
 }
 
 else if ($response["result"] == "success") {
 
-    if ($response["type"] == "paper" || $response["type"] == "plan") {
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=' . $response["file_name"]);
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($response["file"]));
-        ob_clean();
-        flush();
-        readfile($response["file"]);
-        exit();
-    }
-    else {
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/zip');
-        header('Content-Disposition: attachment; filename='. $response["file"]);
-        header('Content-Length: ' . filesize($response["file"]));
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        ob_clean();
-        flush();
-        readfile($response["file"]);
-        exit();
-    }
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename=' . $response["file_name"] . "." . $response["file_extension"]);
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($response["file_path"]));
+    ob_clean();
+    flush();
+    readfile($response["file_path"]);
+    exit();
+   
 }
-
 ?>

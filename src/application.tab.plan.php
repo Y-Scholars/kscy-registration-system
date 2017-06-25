@@ -244,7 +244,7 @@ function render_plan($response) {
             <label>연구계획 파일 (Research Plan File)
                 <?php if (!empty($response["data"]["file"])) {
                     $file_extension = pathinfo($response["data"]["file"])['extension'];?>
-                <u><a href="<?php echo("download.php?type=plan&extension=".$file_extension);?>"> 다운로드</a></u>
+                <u><a href="<?php echo("./download.php?type=plan");?>"> 다운로드</a></u>
                 <?php } ?>
             </label>
             <div class="ui fluid file input action">

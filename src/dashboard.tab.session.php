@@ -83,7 +83,7 @@ function render_session($response) {
     ?>
     <h2 class="ui header"><?php echo($strings["session_names"][$response["session_no"]]);?></h2>
     <a class="ui basic button" href="./dashboard.export.php?type=session&no=<?php echo($response["session_no"]);?>"><i class="icon download"></i>엑셀로 내보내기...</a>
-    <a class="ui basic button" href="./dashboard.download.php?type=session&no=<?php echo($response["session_no"]);?>"><i class="icon download"></i>전체 지원서 내려받기...</a>
+    <a class="ui basic button" href="./download.php?type=session&no=<?php echo($response["session_no"]);?>"><i class="icon download"></i>전체 지원서 내려받기...</a>
     <h3 class="ui header">논문 발표 지원서</h3>
     <table class="ui structured celled table">
         <thead>
@@ -128,7 +128,7 @@ function render_session($response) {
                     </td>
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>">
-                        <a class="ui icon button fluid" href="<?php echo($application["file"]);?>"><i class="icon download"></i></a>
+                        <a class="ui icon button fluid" href="./download.php?type=paper&no=<?php echo($application["no"]);?>"><i class="icon download"></i></a>
                     </td>
                     <td rowspan="<?php echo($team_members_no);?>">
                     <select class="ui dropdown application fluid" data-no="<?php echo($application["no"]);?>">
@@ -190,7 +190,7 @@ function render_session($response) {
                     </td>
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>">
-                        <a class="ui icon button fluid" href="<?php echo($application["file"]);?>"><i class="icon download"></i></a>
+                        <a class="ui icon button fluid" href="./download.php?type=plan&no=<?php echo($application["no"]);?>"><i class="icon download"></i></a>
                     </td>
                     <td rowspan="<?php echo($team_members_no);?>">
                     <select class="ui dropdown application fluid" data-no="<?php echo($application["no"]);?>">
