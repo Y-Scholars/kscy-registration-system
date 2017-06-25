@@ -444,6 +444,7 @@ $('.ui.form')
             studentPhoneNumber: 'empty',
             studentPassword: ['match[studentPasswordRepeat]', 'empty'],
             studentEmail: 'email',
+            studentSurvey: 'empty',
             studentTerms: 'checked'
         }
     }
