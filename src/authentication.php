@@ -19,13 +19,30 @@ function process() {
     global $utils;
 
     // 변수에 POST 값 읽어오기
-    $user_redirect = base64_decode(isset($_GET["redirect"]) ? $_GET["redirect"] : "");
+    $user_redirect = base64_decode(isset($_GET["redirect"]) ? $_GET["redirect"] : "./");
     $user_student_email = $_POST["studentEmail"];
     $user_student_password = $_POST["studentPassword"];
+
+    // 로그아웃
+    $user_logout = false;
+    if (!empty($_GET["logout"])) {
+
+        $session->delete_student_no();
+        $user_logout = true;
+
+        return array(
+            "result" => "success",
+            "redirect" => "./"
+        );
+    }
 
     // POST 값 유효성 검사
     $is_try = !empty($user_student_email);
     $is_valid = !(empty($user_student_email) ||  empty($user_student_password));
+
+    if ($user_logout) {
+        $session->delete_student_no();
+    }
 
     if (!$is_try) {
         return array(

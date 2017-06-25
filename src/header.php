@@ -29,7 +29,8 @@ $header_title = "KSCY " . $title_korean;
     <div class="ui container">
         <a href="/"><img class="kscy-header-logo" src="./images/site-top-logo.png"/></a>
         <h1 class="kscy-header-subtitle"><?php echo($title_korean);?></h1>
-        <h1 class="kscy-header-subtitle"><?php echo($title_english);?></h1>
+        <h1 class="kscy-header-subtitle"><?php echo($title_english); if ($session->get_level() >= 1)  { ?><a class="ui right floated inverted basic button" href="./authentication.php?logout=true">로그아웃</a><?php } ?></h1>
+        
     </div>
 </div>
 

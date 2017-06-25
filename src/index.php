@@ -13,9 +13,7 @@ require_once("./session.php");
 $title_korean = "참가접수 시스템";
 $title_english ="Registration System";
 
-$session->delete_student_no();
-
-include_once("header.php");
+include_once("./header.php");
 ?>
 <div class="kscy-body">
 <div class="ui container">
@@ -63,5 +61,5 @@ include_once("header.php");
 </div>
 </div>
 <?php
-include_once("footer.php");
+include_once("./footer.php");
 ?>

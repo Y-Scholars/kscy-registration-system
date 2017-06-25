@@ -104,7 +104,9 @@ function processor_paper_and_plan($excel_data, $is_paper) {
                ->setCellValue("J1", "전화번호")
                ->setCellValue("K1", "입금")
                ->setCellValue("L1", "참가 상태")
-               ->setCellValue("M1", "제출 시간");
+               ->setCellValue("M1", "태그")
+               ->setCellValue("N1", "메모")
+               ->setCellValue("O1", "제출 시간");
 
     $excel_data->getActiveSheet()->setTitle(($is_paper ? '논문' : '연구계획') . ' 발표 지원서');
     $i = 2;
@@ -134,7 +136,9 @@ function processor_paper_and_plan($excel_data, $is_paper) {
                        ->setCellValue("J".$i, $team_member_data["phone_number"])
                        ->setCellValue("K".$i, $strings["deposit_names"][$team_member_data["deposit_status"]])
                        ->setCellValue("L".$i, $strings["approved_names"][$application["approved"]])
-                       ->setCellValue("M".$i, $application["timestamp"]);
+                       ->setCellValue("M".$i, $team_member_data["tag"])
+                       ->setCellValue("N".$i, $team_member_data["memo"])
+                       ->setCellValue("O".$i, $application["timestamp"]);
             $i++;
         }
         $count++;
@@ -167,7 +171,9 @@ function processor_mentoring($excel_data) {
                ->setCellValue("J1", "전화번호")
                ->setCellValue("K1", "입금")
                ->setCellValue("L1", "참가 상태")
-               ->setCellValue("M1", "제출 시간");
+               ->setCellValue("M1", "태그")
+               ->setCellValue("N1", "메모")
+               ->setCellValue("O1", "제출 시간");
 
     $excel_data->getActiveSheet()->setTitle('멘토링 참가 지원서');
     $i = 2;
@@ -197,7 +203,9 @@ function processor_mentoring($excel_data) {
                        ->setCellValue("J".$i, $team_member_data["phone_number"])
                        ->setCellValue("K".$i, $strings["deposit_names"][$team_member_data["deposit_status"]])
                        ->setCellValue("L".$i, $strings["approved_names"][$application["approved"]])
-                       ->setCellValue("M".$i, $application["timestamp"]);
+                       ->setCellValue("M".$i, $team_member_data["tag"])
+                       ->setCellValue("N".$i, $team_member_data["memo"])
+                       ->setCellValue("O".$i, $application["timestamp"]);
             $i++;
         }
         $count++;
@@ -232,7 +240,9 @@ function processor_camp($excel_data) {
                ->setCellValue("L1", "보호자 연락처")
                ->setCellValue("M1", "입금")
                ->setCellValue("N1", "참가 상태")
-               ->setCellValue("O1", "제출 시간");
+               ->setCellValue("O1", "태그")
+               ->setCellValue("P1", "메모")
+               ->setCellValue("Q1", "제출 시간");
 
     $excel_data->getActiveSheet()->setTitle('멘토링 참가 지원서');
     $i = 2;
@@ -264,7 +274,9 @@ function processor_camp($excel_data) {
                        ->setCellValue("L".$i, $team_member_data["guardian_phone_number"])
                        ->setCellValue("M".$i, $strings["deposit_names"][$team_member_data["deposit_status"]])
                        ->setCellValue("N".$i, $strings["approved_names"][$application["approved"]])
-                       ->setCellValue("O".$i, $application["timestamp"]);
+                       ->setCellValue("O".$i, $team_member_data["tag"])
+                       ->setCellValue("P".$i, $team_member_data["memo"])
+                       ->setCellValue("Q".$i, $application["timestamp"]);
             $i++;
         }
         $count++;
@@ -290,7 +302,9 @@ function processor_session($excel_data, $session_no) {
                ->setCellValue("J1", "전화번호")
                ->setCellValue("K1", "입금")
                ->setCellValue("L1", "참가 상태")
-               ->setCellValue("M1", "제출 시간");
+               ->setCellValue("M1", "태그")
+               ->setCellValue("N1", "메모")
+               ->setCellValue("O1", "제출 시간");
 
     $excel_data->getActiveSheet()->setTitle(str_replace(":", " -", $strings["session_names"][$session_no]));
 
@@ -327,7 +341,9 @@ function processor_session($excel_data, $session_no) {
                        ->setCellValue("J".$i, $team_member_data["phone_number"])
                        ->setCellValue("K".$i, $strings["deposit_names"][$team_member_data["deposit_status"]])
                        ->setCellValue("L".$i, $strings["approved_names"][$application["approved"]])
-                       ->setCellValue("M".$i, $application["timestamp"]);
+                       ->setCellValue("M".$i, $team_member_data["tag"])
+                       ->setCellValue("N".$i, $team_member_data["memo"])
+                       ->setCellValue("O".$i, $application["timestamp"]);
             $i++;
         }
         $count++;
@@ -364,7 +380,9 @@ function processor_session($excel_data, $session_no) {
                        ->setCellValue("J".$i, $team_member_data["phone_number"])
                        ->setCellValue("K".$i, $strings["deposit_names"][$team_member_data["deposit_status"]])
                        ->setCellValue("L".$i, $strings["approved_names"][$application["approved"]])
-                       ->setCellValue("M".$i, $application["timestamp"]);
+                       ->setCellValue("M".$i, $team_member_data["tag"])
+                       ->setCellValue("N".$i, $team_member_data["memo"])
+                       ->setCellValue("O".$i, $application["timestamp"]);
             $i++;
         }
         $count ++;
@@ -400,7 +418,9 @@ function processor_session($excel_data, $session_no) {
                        ->setCellValue("J".$i, $team_member_data["phone_number"])
                        ->setCellValue("K".$i, $strings["deposit_names"][$team_member_data["deposit_status"]])
                        ->setCellValue("L".$i, $strings["approved_names"][$application["approved"]])
-                       ->setCellValue("M".$i, $application["timestamp"]);
+                       ->setCellValue("M".$i, $team_member_data["tag"])
+                       ->setCellValue("N".$i, $team_member_data["memo"])
+                       ->setCellValue("O".$i, $application["timestamp"]);
             $i++;
         }
         $count++;
@@ -429,7 +449,9 @@ function processor_student($excel_data) {
                ->setCellValue("K1", "자동 참가전환")
                ->setCellValue("L1", "참가 트랙")
                ->setCellValue("M1", "입금")
-               ->setCellValue("N1", "제출 시간");
+               ->setCellValue("N1", "태그")
+               ->setCellValue("O1", "메모")
+               ->setCellValue("P1", "제출 시간");
 
     $excel_data->getActiveSheet()->setTitle("전체 학생 데이터");
 
@@ -487,7 +509,9 @@ function processor_student($excel_data) {
                        ->setCellValue("K".$i, $student["auto_switch"] == "1" ? "예" : "아니오")   
                        ->setCellValue("L".$i, implode(", ", $together))
                        ->setCellValue("M".$i, $strings["deposit_names"][$student["deposit_status"]])
-                       ->setCellValue("N".$i, $student["timestamp"]);
+                       ->setCellValue("N".$i, $strings["tag"])
+                       ->setCellValue("O".$i, $strings["memo"])
+                       ->setCellValue("P".$i, $student["timestamp"]);
             $i++;
         
     }
