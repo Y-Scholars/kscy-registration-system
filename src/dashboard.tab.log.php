@@ -11,6 +11,8 @@ require_once("./utils.php");
 require_once("./session.php");
 require_once("./strings.php");
 
+error_reporting(-1);
+
 function process_log() {
 
     global $db;

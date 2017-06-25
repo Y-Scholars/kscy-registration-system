@@ -19,6 +19,7 @@ require_once("./dashboard.tab.camp.php");
 require_once("./dashboard.tab.session.php");
 require_once("./dashboard.tab.student.php");
 require_once("./dashboard.tab.log.php");
+require_once("./dashboard.tab.settings.php");
 
 function process() {
 
@@ -115,6 +116,9 @@ function process() {
             break;
         case "log":
             $response = process_log();
+            break;
+        case "settings":
+            $response = process_settings();
             break;
     }
 
@@ -246,7 +250,9 @@ include_once("./header.php");
                 <a class="item<?php echo($response["tab"] == "log" ? " active" : "");?>" href="./dashboard.php?tab=log">
                     작업 로그
                 </a>
-                <a class="item">통계</a>
+                <a class="item<?php echo($response["tab"] == "settings" ? " active" : "");?>" href="./dashboard.php?tab=settings">
+                    대시보드 설정
+                </a>
             </div>
         </div>
         <div class="twelve wide stretched column">
@@ -272,6 +278,9 @@ include_once("./header.php");
                     break;
                 case "log":
                     echo(render_log($response));
+                    break;
+                case "settings":
+                    echo(render_settings($response));
                     break;
             } ?>
             </div>
