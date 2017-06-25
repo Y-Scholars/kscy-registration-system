@@ -58,6 +58,7 @@ function render_paper($response) {
     ?>
     <h2 class="ui header">논문 발표 지원서</h2>
     <a class="ui basic button" href="./dashboard.export.php?type=paper"><i class="icon download"></i>엑셀로 내보내기...</a>
+    <a class="ui basic button" href="./dashboard.export.php?type=camp"><i class="icon download"></i>전체 지원서 내려받기...</a>
     <table class="ui structured celled table">
         <thead>
             <tr>

@@ -45,8 +45,8 @@ function render_settings($response) {
         <div class="field">
             <label>참가접수 관리</label>
             <div class="ui checkbox">
-            <input type="checkbox" tabindex="0" class="hidden">
-            <label>접수 마감하기</label>
+                <input type="checkbox" tabindex="0" class="hidden">
+                <label>접수 마감하기</label>
             </div>
         </div>
         <div class="field">
