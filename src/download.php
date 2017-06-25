@@ -147,17 +147,38 @@ function process() {
 
 $response = process();
 
+if ($response["result"] == "error") {
+    exit();
+}
 
-header('Content-Description: File Transfer');
-header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename=' . $filename);
-header('Content-Transfer-Encoding: binary');
-header('Expires: 0');
-header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-header('Pragma: public');
-header('Content-Length: ' . filesize($file));
-ob_clean();
-flush();
-readfile($file);
-exit();
+else if ($response["result"] == "success") {
+
+    if ($response["type"] == "paper" || $response["type"] == "plan") {
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . $response["file_name"]);
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($response["file"]));
+        ob_clean();
+        flush();
+        readfile($response["file"]);
+        exit();
+    }
+    else {
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/zip');
+        header('Content-Disposition: attachment; filename='. $response["file"]);
+        header('Content-Length: ' . filesize($response["file"]));
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        ob_clean();
+        flush();
+        readfile($response["file"]);
+        exit();
+    }
+}
+
 ?>
