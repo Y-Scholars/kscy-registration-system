@@ -20,7 +20,7 @@ function process_log() {
     global $utils;
 
     // 접근 권한 검사
-    if ($session->get_level() < 2)  {
+    if ($session->get_level() < 3)  {
         return array(
             "result" => "error",
             "message" => "접근 권한이 없습니다."

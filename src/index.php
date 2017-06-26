@@ -45,12 +45,12 @@ include_once("./header.php");
             </div>
         </div>
     </div>
-    <div class="disabled step">
+    <div class="step">
         <div class="content">
             <div class="title">합격 확인</div>
             <div class="kscy-body-step-text">이 곳에서 합격 여부를 확인하실 수 있습니다. 합격 확인 후 입금이 완료되면 지원절차가 마무리됩니다.</div>
             <div class="kscy-body-step-buttons">
-                <a class="ui disabled button" href="./status.php">합격자 획인</a>
+                <a class="ui button" href="./status.php">심사 결과 확인</a>
             </div>
             <div class="kscy-body-step-label">
                 <div class="ui disabled basic label">발표<div class="detail">7월 17일 (월)</div></div>

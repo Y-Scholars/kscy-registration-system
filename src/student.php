@@ -231,11 +231,11 @@ function process() {
     $session->delete_student_no();
 
     return array(
-                "result" => "success",
-                "admin" => $is_admin,
-                "review" => $review_mode,
-                "data" => $student_data
-            );
+        "result" => "success",
+        "admin" => $is_admin,
+        "review" => $review_mode,
+        "data" => $student_data
+    );
 }
 
 $response = process();

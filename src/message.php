@@ -74,6 +74,11 @@ function process() {
             $message_text = "이 페이지는 인준된 사용자만 접근이 가능합니다.";
             $go_back = true;
             break;
+        case "status-error":
+            $message_title = "제출된 지원서가 없습니다";
+            $message_type = "negative";
+            $message_text = "지원서 제출 후 다시 확인해 주세요.";
+            break;
     }
 
     return array(
