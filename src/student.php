@@ -446,7 +446,7 @@ include_once("./header.php");
             </div>
         </div>
         <button class="ui button" type="submit" style="margin-top: 40px"><?php echo($response["review"] ? "학생 정보 수정" : "학생 등록");?></button>
-        <a class="ui button" href="./" >취소</a>
+        <a class="ui button" onclick="javascript:history.back(-1);" >취소</a>
     </form>
 </div>
 </div>

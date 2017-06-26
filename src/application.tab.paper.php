@@ -280,7 +280,7 @@ function render_paper($response) {
         <?php if ($response["review"]) {
             echo('<a class="ui button" id="paperDelete">지원서 삭제</a>');
         } ?>
-        <a class="ui button" href="./" >취소</a>
+        <a class="ui button" onclick="javascript:history.back(-1);" >취소</a>
     </form>
 
     <script>

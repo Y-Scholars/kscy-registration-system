@@ -20,6 +20,7 @@ function process() {
     $message_title = "";
     $message_type = "";
     $message_text = "";
+    $go_back = false;
 
     switch ($type) {
         case "error":
@@ -71,13 +72,15 @@ function process() {
             $message_title = "작업에 필요한 권한이 부족합니다";
             $message_type = "negative";
             $message_text = "이 페이지는 인준된 사용자만 접근이 가능합니다.";
+            $go_back = true;
             break;
     }
 
     return array(
         "title" => $message_title,
         "type" => $message_type,
-        "text" => $message_text
+        "text" => $message_text,
+        "go_back" => $go_back
     );
 }
 
@@ -95,7 +98,7 @@ include_once("header.php");
             <?php echo($response["title"]);?>
         </div>
         <p><?php echo($response["text"]);?></p>
-        <a class="ui button" href="./">처음으로 돌아가기</a>
+        <a class="ui button" <?php echo($response["go_back"] ? "onclick='javascript:history.back(-1);'" : 'href="./"');?>>돌아가기</a>
     </div>
 </div>
 </div>
