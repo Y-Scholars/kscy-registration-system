@@ -32,28 +32,39 @@ function process() {
     $user_type = trim($_POST["type"]);
     $user_no = trim($_POST["no"]);
 
-    // 접근 권한 검사
-    if ($session->get_level() < 1)  {
-        return array(
-            "result" => "error",
-            "message" => "접근 권한이 없습니다."
-        );
-    }
-
     if ($user_action == "load") {
+
+        // 접근 권한 검사
+        if ($session->get_level() < 1)  {
+            return array(
+                "result" => "error",
+                "message" => "접근 권한이 없습니다."
+            );
+        }
+
         $response = $db->in('kscy_' . $user_type . 's')
                         ->select('*')
                         ->where('no', '=', $user_no)
                         ->go_and_get();
-        if (!empty($response["desired_session"])) {
-            $response["desired_session"] = $strings["session_names"][$response["desired_session"]];
-        }
+        
+        $response["desired_session"] = translate($response["desired_session"], "session_names");
+        $response["survey"] = translate($response["survey"], "survey_names");
+        $response["level"] = translate($response["level"], "level_names");
+
         if ($response) {
             return $response;
         }
     }
     
     else if ($user_action == "save") {
+
+        // 접근 권한 검사
+        if ($session->get_level() < 2)  {
+            return array(
+                "result" => "error",
+                "message" => "접근 권한이 없습니다."
+            );
+        }
 
         if (!isset($_POST["key"]) || !isset($_POST["value"])) {
             return array(
@@ -86,6 +97,15 @@ function process() {
         "result" => "error",
         "message" => "데이터 로드에 실패하였습니다."
     );
+}
+
+function translate($data, $filter) {
+
+    global $strings;
+
+    if (isset($data)) {
+        return $strings[$filter][$data];
+    }
 }
 
 $response = process();

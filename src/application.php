@@ -45,8 +45,8 @@ function process() {
         // 관리자 권한으로 편집
         if ($team_leader_no >= 0) {
             $admin_mode = true;
-            if ($session->get_level() < 1)  {
-                header("Location: ./authentication.php?redirect=".base64_encode("application.php?review=true&no=" . $team_leader_no));
+            if ($session->get_level() < 2)  {
+                header("Location: ./message.php?type=dashboard-error");
                 exit();
             }
         }  
@@ -121,6 +121,17 @@ function process() {
             break;
     }
 
+    if ($admin_mode && $response["result"] == "success") {
+       
+        $log = $db->in('kscy_logs')
+                    ->insert('user', $session->get_student_no())
+                    ->insert('target_user', $student_no)
+                    ->insert('action', "modify ". $tab . " application")
+                    ->insert('data',  "")
+                    ->insert('ip', $_SERVER['REMOTE_ADDR'])
+                    ->go();
+    }
+
     $response["available_tabs"] = $available_tabs;
     $response["admin"] = $admin_mode;
     $response["student_no"] = $student_no;
@@ -136,12 +147,19 @@ function is_available_tab($tab_name, $student_no) {
                       ->select('no')
                       ->where('team_leader', '=', $student_no)
                       ->go_and_get();
+
     return $tab_exists ? true : false;
 }
 
 $response = process();
 
 if ($response["result"] == "success") {
+
+    // 관리자 모드라면 대시보드로 이동
+    if ($response["admin"]) {
+        header("Location: ./dashboard.php");
+        exit();
+    }
     header("Location: ./message.php?type=application" . ($response["review"] ? "-review" : ""));
     exit();
 } else if ($response["result"] == "error") {

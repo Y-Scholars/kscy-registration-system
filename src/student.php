@@ -34,8 +34,8 @@ function process() {
         // 관리자 권한으로 편집
         if ($student_no >= 0) {
             $is_admin = true;
-            if ($session->get_level() < 1)  {
-                header("Location: ./authentication.php?redirect=".base64_encode("student.php?review=true"));
+            if ($session->get_level() < 2)  {
+                header("Location: ./message.php?type=dashboard-error");
                 exit();
             }
         } 
@@ -60,6 +60,7 @@ function process() {
     $user_student_guardian_name = $_POST["studentGuardianName"];
     $user_student_guardian_phone_number = $_POST["studentGuardianPhoneNumber"];
     $user_student_survey = $_POST["studentSurvey"];
+    $user_student_level = $_POST["studentLevel"];
     $user_student_tag = $_POST["studentTag"];
     $user_student_memo = $_POST["studentMemo"];
     $user_student_switch_option = $_POST["studentSwitchOption"] == "yes" ? "1" : "0";
@@ -127,6 +128,21 @@ function process() {
         
         // 관리자 권한으로 수정했을 경우
         if ($is_admin) {
+
+            if (!empty($user_student_level)) {
+                $user_student_level = intval($user_student_level);
+
+                // 권한 관리
+                if ($user_student_level >= $session->get_level()) {
+                    return array(
+                        "result" => "warning",
+                        "admin" => $is_admin,
+                        "review" => $review_mode,
+                        "message" => "권한 부여에 필요한 사용자 권한이 부족합니다."
+                    );
+                }
+                $response->update('level', $utils->purify($user_student_level));
+            }
             $response->update('memo', $utils->purify($user_student_memo));
             $response->update('tag', $utils->purify($user_student_tag));
             // 입력 비밀번호가 바뀌지 않았다면 비밀번호를 변경하지 않음
@@ -333,6 +349,15 @@ include_once("./header.php");
         </div>
         <?php if ($response["admin"]) { ?>
         <h4 class="ui dividing header" style="margin-top: 40px">관리자 기입 사항</h4>
+        <div class="field">
+            <label>권한 (Level)</label>
+            <select class="ui fluid dropdown" name="studentLevel" id="studentLevel">
+                <?php foreach($strings["level_names"] as $key => $value) { 
+                    if (intval($key) < $session->get_level()) { ?>
+                <option value="<?php echo($key);?>"><?php echo($value);?></option>
+                <?php }} ?>
+            </select>
+        </div>
         <div class="field">
             <label>태그 (Tag)</label>
             <select class="ui fluid dropdown" name="studentTag" id="studentTag">

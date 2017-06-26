@@ -173,6 +173,9 @@ function render_plan($response) {
             data: { action: "save", type: "student", no: $(self).data("no"), key: "deposit_status", value: $(self).val() },
             success: function (data) {
                 $(self).removeClass("disabled");
+                if (data.result == "error") {
+                    alert(data.message);
+                }
             },
             error: function (request, status, error) {
                 $(self).removeClass("disabled");
@@ -191,6 +194,9 @@ function render_plan($response) {
             data: { action: "save", type: "plan", no: $(self).data("no"), key: "approved", value: $(self).val() },
             success: function (data) {
                 $(self).removeClass("disabled");
+                if (data.result == "error") {
+                    alert(data.message);
+                }
             },
             error: function (request, status, error) {
                 $(self).removeClass("disabled");

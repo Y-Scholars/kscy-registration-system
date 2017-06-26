@@ -6,12 +6,12 @@
  * 2017. 06. 23
  */
 
+error_reporting(0);
+
 require_once("./db.php");
 require_once("./utils.php");
 require_once("./session.php");
 require_once("./strings.php");
-
-error_reporting(-1);
 
 function process_log() {
 

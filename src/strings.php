@@ -53,6 +53,14 @@ $tag_names = array(
     "warning" => "중립"
 );
 
+$level_names = array(
+    "0" => "권한 없음", 
+    "1" => "퍼실리테이터",
+    "2" => "코디네이터",
+    "3" => "시스템 관리자",
+    "4" => "시스템 개발자",
+);
+
 $deposit_names = array(
     "0" => "미납",
     "1" => "조기",
@@ -77,6 +85,7 @@ $strings = array(
     "survey_names" => $survey_names,
     "deposit_names" => $deposit_names,
     "approved_names" => $approved_names,
-    "tag_names" => $tag_names
+    "tag_names" => $tag_names,
+    "level_names" => $level_names
 );
 ?>

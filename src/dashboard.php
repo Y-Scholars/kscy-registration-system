@@ -309,6 +309,7 @@ $('.student.name').on("click", function() {
             $("#studentPhone").html(data.phone_number);
             $("#studentGuardianName").html(data.guardian_name);
             $("#studentGuardianPhone").html(data.guardian_phone_number);
+            $("#studentSwitch").html(data.auto_switch);
             $("#studentSurvey").html(data.survey);
             $("#studentMemo").html(data.memo);
             $("#studentLevel").html(data.level);
