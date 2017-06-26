@@ -57,19 +57,40 @@ function render_camp($response) {
 
     ?>
     <div class="ui modal application">
-        <div class="header">캠프 지원서</div>
+        <div class="header">캠프 참가 지원서</div>
         <div class="content">
-            <h4 class="ui header">자기소개</h4>
-            <p id="studentBio"></p>
-            <h4 class="ui header">참가 동기</h4>
-            <p id="studentMotivation"></p>
-            <a id="applicationModify" class="ui basic button"><i class="icon write"></i>지원서 수정</a>
-            <a id="applicationDelete" class="ui basic button"><i class="icon trash"></i>지원서 삭제</a>
+            <table class="ui selectable definition celled sortable table">
+                <tbody>
+                    <tr>
+                        <td class="two wide">번호</td>
+                        <td id="campNo">없음</td>
+                    </tr>
+                    <tr>
+                        <td>자기소개</td>
+                        <td id="campBio">없음</td>
+                    </tr>
+                    <tr>
+                        <td>참가 동기</td>
+                        <td id="campMotivation">없음</td>
+                    </tr>
+                    <tr>
+                        <td>희망 세션</td>
+                        <td id="campDesiredSession">없음</td>
+                    </tr>
+                    <tr>
+                        <td>등록 일시</td>
+                        <td id="campTimestamp">없음</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a id="campModify" class="ui basic button"><i class="icon write"></i>지원서 수정</a>
+            <a id="campDelete" class="ui basic button"><i class="icon trash"></i>지원서 삭제</a>
         </div>
         <div class="actions">
             <div class="ui cancel button">닫기</div>
         </div>
     </div>
+
     <h2 class="ui header">캠프 지원서</h2>
     <a class="ui basic button" href="./dashboard.export.php?type=camp"><i class="icon download"></i>엑셀로 내보내기...</a>
     <table class="ui structured celled table">
@@ -167,7 +188,6 @@ function render_camp($response) {
         });
     });
 
-
     $('.ui.icon.button').on("click", function() {
         var self = this;
         $(self).addClass("loading");
@@ -177,10 +197,13 @@ function render_camp($response) {
             url: './dashboard.ajax.php',
             data: { action: "load", type: "camp", no: $(self).data("no")},
             success: function (data) {
-
                 $(self).removeClass("loading");
-                $("#studentBio").html(data.bio);
-                $("#studentMotivation").html(data.motivation);
+                $("#campNo").html(data.no);
+                $("#campBio").html(data.bio);
+                $("#campMotivation").html(data.motivation);
+                $("#campDesiredSession").html(data.desired_session);
+                $("#campTimestamp").html(data.timestamp);
+                $("#campModify").attr("href", "./application.php?review=true&no=" + data.team_leader);
                 $('.ui.modal.application').modal('show');
             },
             error: function (request, status, error) {

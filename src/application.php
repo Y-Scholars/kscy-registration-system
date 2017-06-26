@@ -16,7 +16,6 @@ require_once("./application.tab.paper.php");
 require_once("./application.tab.plan.php");
 require_once("./application.tab.mentoring.php");
 require_once("./application.tab.camp.php");
-//error_reporting(-1);
 
 function process() {
 
@@ -68,6 +67,44 @@ function process() {
 
     $student_no = $admin_mode ? $team_leader_no : $session->get_student_no();
 
+    $available_tabs = array(
+        "paper" => true,
+        "plan" => true,
+        "mentoring" => true,
+        "camp" => true
+    );
+
+    // 사용 가능한 탭 읽어오기
+    if ($review_mode) {
+
+        $available_tabs = array(
+            "paper" => is_available_tab("kscy_papers", $student_no),
+            "plan" => is_available_tab("kscy_plans", $student_no),
+            "mentoring" => is_available_tab("kscy_mentorings", $student_no),
+            "camp" => is_available_tab("kscy_camps", $student_no),
+        );
+
+        $no_tab = true;
+        foreach ($available_tabs as $tab_enabled) {
+            $no_tab = $no_tab && !$tab_enabled;
+        }
+
+        if ($no_tab) {
+            return array(
+                "result" => "not-exists"
+            );
+        }
+    }
+
+    // 선택된 탭이 활성화되지 않았다면 첫 번째 탭을 선택
+    if (empty($available_tabs[$tab]) || !$available_tabs[$tab]) {
+        foreach ($available_tabs as $key => $value) {
+            if ($value == true) {
+                $tab = $key;
+            }
+        }
+    }
+
     // 각 페이지 프로세싱
     switch ($tab) {
         case "paper":
@@ -82,41 +119,11 @@ function process() {
         case "camp":
             $response = process_camp($review_mode, $delete_mode, $student_no);
             break;
-        default:
-            $tab = "paper";
-            $response = process_paper($review_mode, $delete_mode, $student_no);
     }
 
-    // 사용 가능한 탭 읽어오기
-    if ($review_mode) {
-
-        $response["tab_enabled"] = array(
-            "paper" => is_available_tab("kscy_papers", $student_no),
-            "plan" => is_available_tab("kscy_plans", $student_no),
-            "mentoring" => is_available_tab("kscy_mentorings", $student_no),
-            "camp" => is_available_tab("kscy_camps", $student_no),
-        );
-
-        $no_tab = true;
-        foreach ($response["tab_enabled"] as $tab_enabled) {
-            $no_tab = $no_tab && !$tab_enabled;
-        }
-
-        if ($no_tab) {
-            return array(
-                "result" => "not-exists"
-            );
-        }
-    }
-    else {
-        $response["tab_enabled"] = array(
-            "paper" => true,
-            "plan" => true,
-            "mentoring" => true,
-            "camp" => true
-        );
-    }
-
+    $response["available_tabs"] = $available_tabs;
+    $response["admin"] = $admin_mode;
+    $response["student_no"] = $student_no;
     $response["tab"] = $tab;
     return $response;
 }
@@ -199,17 +206,17 @@ include_once("./header.php");
 
     <div class="ui top attached tabular menu" style="margin-top: 40px">
         <?php 
-        if ($response["tab_enabled"]["paper"]) { ?>
-            <a class="<?php echo($response["tab"] == "paper" ? "active " : "")?>item" href="./application.php?tab=paper<?php echo($response["review"] ? "&review=true" : "");?>">논문 발표</a><?php
+        if ($response["available_tabs"]["paper"]) { ?>
+            <a class="<?php echo($response["tab"] == "paper" ? "active " : "")?>item" href="./application.php?tab=paper<?php echo($response["review"] ? "&review=true" : "");?><?php echo($response["admin"] ? "&no=".$response["student_no"] : "");?>">논문 발표</a><?php
         }
-        if ($response["tab_enabled"]["plan"]) { ?>
-            <a class="<?php echo($response["tab"] == "plan" ? "active " : "")?>item" href="./application.php?tab=plan<?php echo($response["review"] ? "&review=true" : "");?>">연구계획 발표</a><?php
+        if ($response["available_tabs"]["plan"]) { ?>
+            <a class="<?php echo($response["tab"] == "plan" ? "active " : "")?>item" href="./application.php?tab=plan<?php echo($response["review"] ? "&review=true" : "");?><?php echo($response["admin"] ? "&no=".$response["student_no"] : "");?>">연구계획 발표</a><?php
         }
-        if ($response["tab_enabled"]["mentoring"]) { ?>
-            <a class="<?php echo($response["tab"] == "mentoring" ? "active " : "")?>item" href="./application.php?tab=mentoring<?php echo($response["review"] ? "&review=true" : "");?>">멘토링</a><?php
+        if ($response["available_tabs"]["mentoring"]) { ?>
+            <a class="<?php echo($response["tab"] == "mentoring" ? "active " : "")?>item" href="./application.php?tab=mentoring<?php echo($response["review"] ? "&review=true" : "");?><?php echo($response["admin"] ? "&no=".$response["student_no"] : "");?>">멘토링</a><?php
         }
-        if ($response["tab_enabled"]["camp"]) { ?>
-            <a class="<?php echo($response["tab"] == "camp" ? "active " : "")?>item" href="./application.php?tab=camp<?php echo($response["review"] ? "&review=true" : "");?>">캠프</a><?php
+        if ($response["available_tabs"]["camp"]) { ?>
+            <a class="<?php echo($response["tab"] == "camp" ? "active " : "")?>item" href="./application.php?tab=camp<?php echo($response["review"] ? "&review=true" : "");?><?php echo($response["admin"] ? "&no=".$response["student_no"] : "");?>">캠프</a><?php
         } ?>
     </div>
 
