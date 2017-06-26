@@ -11,7 +11,7 @@ require_once("./utils.php");
 require_once("./session.php");
 require_once("./strings.php");
 
-function process_mentoring($review_mode, $delete_mode) {
+function process_mentoring($review_mode, $delete_mode, $student_no) {
 
     global $db;
     global $session;
@@ -38,7 +38,7 @@ function process_mentoring($review_mode, $delete_mode) {
 
         $response = $db->in('kscy_mentorings')
                         ->delete()
-                        ->where("team_leader", "=", $session->get_student_no())
+                        ->where("team_leader", "=", $student_no)
                         ->go();
         
         if ($response) {
@@ -64,7 +64,7 @@ function process_mentoring($review_mode, $delete_mode) {
                          ->select('desired_session')
                          ->select('team_members')
                          ->select('team_leader')
-                         ->where('team_leader', '=', $session->get_student_no())
+                         ->where('team_leader', '=', $student_no)
                          ->go_and_get();
         
         // 세부 팀 멤버 데이터 로드
@@ -113,7 +113,7 @@ function process_mentoring($review_mode, $delete_mode) {
                        ->update('desired_session', $utils->purify($user_mentoring_desired_session))
                        ->update('team_leader', $utils->purify($user_mentoring_team_leader))
                        ->update('team_members', $utils->purify($user_mentoring_team_members))
-                       ->where('team_leader', '=', $session->get_student_no())
+                       ->where('team_leader', '=', $student_no)
                        ->go();
 
         if (!$response) {
@@ -225,7 +225,7 @@ function render_mentoring($response) {
         </div>
         <div class="required inline field" style="margin-top:25px">
             <div class="ui checkbox">
-                <input type="checkbox" tabindex="0" name="mentoringAgreeTerms" class="hidden">
+                <input type="checkbox" tabindex="0" name="mentoringAgreeTerms" class="hidden"<?php echo($response["review"] ? " checked" : "");?>>
                 <label>본인은 KSCY <a onclick="$('#terms').modal('show')">운영 및 심사 방침</a>에 동의합니다</label>
             </div>
         </div>

@@ -11,12 +11,14 @@ error_reporting(0);
 require_once("./db.php");
 require_once("./utils.php");
 require_once("./session.php");
+require_once("./strings.php");
 
 function process() {
 
     global $db;
     global $session;
     global $utils;
+    global $strings;
 
     // 파라미터 체크
     if (!isset($_POST["action"]) || !isset($_POST["type"]) || !isset($_POST["no"])) {
@@ -43,6 +45,9 @@ function process() {
                         ->select('*')
                         ->where('no', '=', $user_no)
                         ->go_and_get();
+        if (!empty($response["desired_session"])) {
+            $response["desired_session"] = $strings["session_names"][$response["desired_session"]];
+        }
         if ($response) {
             return $response;
         }

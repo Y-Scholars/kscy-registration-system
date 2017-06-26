@@ -6,6 +6,8 @@
  * 2017. 06. 15
  */
 
+require_once("./session.php");
+
 $header_meta_description = "KSCY 참가접수 시스템";
 $header_title = "KSCY " . $title_korean;
 ?>

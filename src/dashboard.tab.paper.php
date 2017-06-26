@@ -56,6 +56,44 @@ function render_paper($response) {
     global $strings;
 
     ?>
+    <div class="ui modal application">
+        <div class="header">논문 발표 지원서</div>
+        <div class="content">
+            <table class="ui selectable definition celled sortable table">
+                <tbody>
+                    <tr>
+                        <td>번호</td>
+                        <td id="paperNo">없음</td>
+                    </tr>
+                    <tr>
+                        <td>제목</td>
+                        <td id="paperTitle">없음</td>
+                    </tr>
+                    <tr>
+                        <td>파일</td>
+                        <td><a id="paperDownload" href="#">다운로드</a></td>
+                    </tr>
+                    <tr>
+                        <td>연구분야</td>
+                        <td id="paperResearchField">없음</td>
+                    </tr>
+                    <tr>
+                        <td>희망 세션</td>
+                        <td id="paperDesiredSession">없음</td>
+                    </tr>
+                    <tr>
+                        <td>등록 일시</td>
+                        <td id="paperTimestamp">없음</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a id="paperModify" class="ui basic button"><i class="icon write"></i>지원서 수정</a>
+            <a id="paperDelete" class="ui basic button"><i class="icon trash"></i>지원서 삭제</a>
+        </div>
+        <div class="actions">
+            <div class="ui cancel button">닫기</div>
+        </div>
+    </div>
     <h2 class="ui header">논문 발표 지원서</h2>
     <a class="ui basic button" href="./dashboard.export.php?type=paper"><i class="icon download"></i>엑셀로 내보내기...</a>
     <a class="ui basic button" href="./download.php?type=papers-all"><i class="icon download"></i>전체 지원서 내려받기...</a>
@@ -69,7 +107,7 @@ function render_paper($response) {
                 <th class="two wide">이름</th>
                 <th>학교</th>
                 <th class="two wide">참가비</th>
-                <th>파일</th>
+                <th>지원서 열람</th>
                 <th class="two wide">합격 여부</th>
             </tr>
         </thead>
@@ -85,8 +123,8 @@ function render_paper($response) {
                 <tr class="<?php echo($team_member_data["tag"]);?>">
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($count);?></td>
-                    <td rowspan="<?php echo($team_members_no);?>"><?php echo($application["title"]);?></td>
-                    <td rowspan="<?php echo($team_members_no);?>"><?php echo($application["research_field"]);?></td>
+                    <td rowspan="<?php echo($team_members_no);?>"><?php echo(mb_strimwidth($application["title"], 0, 35, '...'));?></td>
+                    <td rowspan="<?php echo($team_members_no);?>"><?php echo(mb_strimwidth($application["research_field"], 0, 35, '...'));?></td>
                     <td rowspan="<?php echo($team_members_no);?>"><?php echo($strings["session_names"][$application["desired_session"]]);?></td>
                 <?php } ?>
                 <?php if ($team_member_data["no"] == $application["team_leader"]) { ?>
@@ -104,7 +142,7 @@ function render_paper($response) {
                     </td>
                 <?php if ($first) { ?>
                     <td rowspan="<?php echo($team_members_no);?>">
-                        <a class="ui icon button fluid" href="./download.php?type=paper&no=<?php echo($application["no"]);?>"><i class="icon download"></i></a>
+                        <button class="ui icon button fluid" data-no="<?php echo($application["no"]);?>"><i class="icon unhide"></i></button>
                     </td>
                     <td rowspan="<?php echo($team_members_no);?>">
                     <select class="ui dropdown application fluid" data-no="<?php echo($application["no"]);?>">
@@ -157,6 +195,31 @@ function render_paper($response) {
             error: function (request, status, error) {
                 $(self).removeClass("disabled");
                 alert("상태 업데이트에 실패했습니다.");
+            }
+        });
+    });
+
+    $('.ui.icon.button').on("click", function() {
+        var self = this;
+        $(self).addClass("loading");
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            url: './dashboard.ajax.php',
+            data: { action: "load", type: "paper", no: $(self).data("no")},
+            success: function (data) {
+                $(self).removeClass("loading");
+                $("#paperNo").html(data.no);
+                $("#paperTitle").html(data.title);
+                $("#paperDownload").attr("href", "./download.php?type=paper&no=" + data.no);
+                $("#paperResearchField").html(data.research_field);
+                $("#paperDesiredSession").html(data.desired_session);
+                $("#paperTimestamp").html(data.timestamp);
+                $("#paperModify").attr("href", "./application.php?review=true&no=" + data.team_leader);
+                $('.ui.modal.application').modal('show');
+            },
+            error: function (request, status, error) {
+                $(self).removeClass("loading");
             }
         });
     });

@@ -11,7 +11,7 @@ require_once("./utils.php");
 require_once("./session.php");
 require_once("./strings.php");
 
-function process_plan($review_mode, $delete_mode) {
+function process_plan($review_mode, $delete_mode, $student_no) {
 
     global $db;
     global $session;
@@ -30,7 +30,6 @@ function process_plan($review_mode, $delete_mode) {
     // POST 값들의 유효성을 체크
     $is_try = !empty($user_plan_title);
     $is_valid = !(empty($user_plan_title) || 
-                  empty($user_plan_file) || 
                   empty($user_plan_research_field) || 
                   empty($user_plan_desired_session) || 
                   empty($user_plan_team_members));
@@ -40,7 +39,7 @@ function process_plan($review_mode, $delete_mode) {
 
         $response = $db->in('kscy_plans')
                         ->delete()
-                        ->where("team_leader", "=", $session->get_student_no())
+                        ->where("team_leader", "=", $student_no)
                         ->go();
         
         if ($response) {
@@ -67,7 +66,7 @@ function process_plan($review_mode, $delete_mode) {
                          ->select('desired_session')
                          ->select('team_members')
                          ->select('team_leader')
-                         ->where('team_leader', '=', $session->get_student_no())
+                         ->where('team_leader', '=', $student_no)
                          ->go_and_get();
         
         // 세부 팀 멤버 데이터 로드
@@ -141,7 +140,7 @@ function process_plan($review_mode, $delete_mode) {
                        ->update('desired_session', $utils->purify($user_plan_desired_session))
                        ->update('team_leader', $utils->purify($user_plan_team_leader))
                        ->update('team_members', $utils->purify($user_plan_team_members))
-                       ->where('team_leader', '=', $session->get_student_no())
+                       ->where('team_leader', '=', $student_no)
                        ->go();
 
         if (!$response) {
@@ -273,7 +272,7 @@ function render_plan($response) {
         </div>
         <div class="required inline field" style="margin-top:25px">
             <div class="ui checkbox">
-                <input type="checkbox" tabindex="0" name="planAgreeTerms" class="hidden">
+                <input type="checkbox" tabindex="0" name="planAgreeTerms" class="hidden"<?php echo($response["review"] ? " checked" : "");?>>
                 <label>본인은 KSCY <a onclick="$('#terms').modal('show')">운영 및 심사 방침</a>에 동의합니다</label>
             </div>
         </div>
@@ -294,7 +293,6 @@ function render_plan($response) {
     $('.ui.form').form({
         fields: {
             planTitle: 'minLength[3]',
-            planFile: 'empty',
             planResearchField: 'minLength[2]',
             planTeamMembers: 'minLength[1]',
             planAgreeTerms: 'checked'

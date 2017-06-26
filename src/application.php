@@ -16,6 +16,7 @@ require_once("./application.tab.paper.php");
 require_once("./application.tab.plan.php");
 require_once("./application.tab.mentoring.php");
 require_once("./application.tab.camp.php");
+//error_reporting(-1);
 
 function process() {
 
@@ -33,10 +34,30 @@ function process() {
         $delete_mode = true;
     }
 
+    $admin_mode = false;
+    $team_leader_no = -1;
+    if (!empty($_GET["no"])) {
+        $team_leader_no = intval($_GET["no"]);
+    }
+
     // 권한이 없을 경우 로그인 페이지로 이동
-    if (($review_mode || $delete_mode) && empty($session->get_student_no())) {
-        header("Location: ./authentication.php?redirect=".base64_encode("application.php?review=true"));
-        exit();
+    if (($review_mode || $delete_mode)) {
+
+        // 관리자 권한으로 편집
+        if ($team_leader_no >= 0) {
+            $admin_mode = true;
+            if ($session->get_level() < 1)  {
+                header("Location: ./authentication.php?redirect=".base64_encode("application.php?review=true&no=" . $team_leader_no));
+                exit();
+            }
+        }  
+
+        else {
+            if (empty($session->get_student_no())) {
+                header("Location: ./authentication.php?redirect=".base64_encode("application.php?review=true"));
+                exit();
+            }
+        }
     }
 
     // 탭 정보 읽어오기
@@ -45,52 +66,43 @@ function process() {
         $tab = $_GET["tab"];
     }
 
+    $student_no = $admin_mode ? $team_leader_no : $session->get_student_no();
+
     // 각 페이지 프로세싱
     switch ($tab) {
         case "paper":
-            $response = process_paper($review_mode, $delete_mode);
+            $response = process_paper($review_mode, $delete_mode, $student_no);
             break;
         case "plan":
-            $response = process_plan($review_mode, $delete_mode);
+            $response = process_plan($review_mode, $delete_mode, $student_no);
             break;
         case "mentoring":
-            $response = process_mentoring($review_mode, $delete_mode);
+            $response = process_mentoring($review_mode, $delete_mode, $student_no);
             break;
         case "camp":
-            $response = process_camp($review_mode, $delete_mode);
+            $response = process_camp($review_mode, $delete_mode, $student_no);
             break;
         default:
             $tab = "paper";
-            $response = process_paper($review_mode, $delete_mode);
+            $response = process_paper($review_mode, $delete_mode, $student_no);
     }
 
     // 사용 가능한 탭 읽어오기
     if ($review_mode) {
-        $paper_exists = $db->in('kscy_papers')
-                           ->select('no')
-                           ->where('team_leader', '=', $session->get_student_no())
-                           ->go_and_get();
-        $plan_exists = $db->in('kscy_plans')
-                           ->select('no')
-                           ->where('team_leader', '=', $session->get_student_no())
-                           ->go_and_get();
-        $mentoring_exists = $db->in('kscy_mentorings')
-                           ->select('no')
-                           ->where('team_leader', '=', $session->get_student_no())
-                           ->go_and_get();
-        $camp_exists = $db->in('kscy_camps')
-                           ->select('no')
-                           ->where('team_leader', '=', $session->get_student_no())
-                           ->go_and_get();
 
         $response["tab_enabled"] = array(
-            "paper" => $paper_exists,
-            "plan" => $plan_exists,
-            "mentoring" => $mentoring_exists,
-            "camp" => $camp_exists
+            "paper" => is_available_tab("kscy_papers", $student_no),
+            "plan" => is_available_tab("kscy_plans", $student_no),
+            "mentoring" => is_available_tab("kscy_mentorings", $student_no),
+            "camp" => is_available_tab("kscy_camps", $student_no),
         );
 
-        if (!$paper_exists && !$plan_exists && !$mentoring_exists && !$camp_exists) {
+        $no_tab = true;
+        foreach ($response["tab_enabled"] as $tab_enabled) {
+            $no_tab = $no_tab && !$tab_enabled;
+        }
+
+        if ($no_tab) {
             return array(
                 "result" => "not-exists"
             );
@@ -107,6 +119,17 @@ function process() {
 
     $response["tab"] = $tab;
     return $response;
+}
+
+function is_available_tab($tab_name, $student_no) {
+
+    global $db;
+    
+    $tab_exists = $db->in($tab_name)
+                      ->select('no')
+                      ->where('team_leader', '=', $student_no)
+                      ->go_and_get();
+    return $tab_exists ? true : false;
 }
 
 $response = process();

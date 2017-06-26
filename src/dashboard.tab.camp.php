@@ -63,7 +63,8 @@ function render_camp($response) {
             <p id="studentBio"></p>
             <h4 class="ui header">참가 동기</h4>
             <p id="studentMotivation"></p>
-            <button class="ui basic button"><i class="icon trash"></i>지원서 삭제</button>
+            <a id="applicationModify" class="ui basic button"><i class="icon write"></i>지원서 수정</a>
+            <a id="applicationDelete" class="ui basic button"><i class="icon trash"></i>지원서 삭제</a>
         </div>
         <div class="actions">
             <div class="ui cancel button">닫기</div>

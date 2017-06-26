@@ -135,7 +135,7 @@ function process() {
         if (empty($application_file)) {
             return array(
                 "result" => "error",
-                "message" => "파일이 존재하지 않습니다."  . $db->rq()
+                "message" => "파일이 존재하지 않습니다."
             );
         }
 
