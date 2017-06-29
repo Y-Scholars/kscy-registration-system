@@ -89,7 +89,7 @@ function process() {
         return array(
             "result" => "success",
             "file_path" => $zip_path,
-            "file_name" => "data",
+            "file_name" => "data-" . time(),
             "file_extension" => "zip"
         );
     }

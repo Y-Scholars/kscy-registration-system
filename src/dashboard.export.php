@@ -557,7 +557,7 @@ $response = process();
 
 if ($response["result"] == "success") {
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="export.xlsx"');
+    header('Content-Disposition: attachment;filename="export-'.time().'.xlsx"');
     header('Cache-Control: max-age=0');
     header('Cache-Control: max-age=1');
     header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT');

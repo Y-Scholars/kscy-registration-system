@@ -51,7 +51,7 @@ function render_settings($response) {
         </div>
         <div class="field">
             <label>참가자 데이터 관리</label>
-            <a class="ui basic button">전체 내보내기</a>
+            <a class="ui basic button" href="./dashboard.snapshot.php">전체 내보내기</a>
             <a class="ui basic button">전체 불러오기</a>
             <a class="ui basic negative button">초기화</a>
         </div>
