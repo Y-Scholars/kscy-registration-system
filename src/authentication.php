@@ -107,7 +107,7 @@ include_once("./header.php");
         <i class="warning circle icon"></i>
         <div class="content">
             <div class="header">유의사항</div>
-            <p>학생 등록 시 입력했던 이메일과 비밀번호로 로그인이 가능합니다.</p>
+            <p>학생 등록 시 입력했던 이메일과 비밀번호로 로그인이 가능합니다. <a href="./student.reset.php">비밀번호를 잊으셨나요?</a></p>
         </div>
     </div>
 

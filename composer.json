@@ -3,6 +3,7 @@
         "vendor-dir": "./src/vendor"
     },
     "require": {
-        "phpoffice/phpexcel": "^1.8"
+        "phpoffice/phpexcel": "^1.8",
+        "phpmailer/phpmailer": "^5.2"
     }
 }

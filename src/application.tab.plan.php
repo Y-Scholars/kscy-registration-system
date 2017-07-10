@@ -17,7 +17,7 @@ function process_plan($review_mode, $delete_mode, $student_no) {
     global $session;
     global $utils;
 
-    $max_file_size = 1048576 * 50;
+    $max_file_size = 1048576 * 100;
 
     // 변수로 POST 값들 읽어오기
     $user_plan_title = trim($_POST["planTitle"]);

@@ -7,3 +7,4 @@ Thumbs.db
 /phpunit.xml
 /src/vendor
 /src/db.account.php
+/src/mail.account.php

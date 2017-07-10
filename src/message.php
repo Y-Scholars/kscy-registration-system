@@ -79,6 +79,11 @@ function process() {
             $message_type = "negative";
             $message_text = "지원서 제출 후 다시 확인해 주세요.";
             break;
+        case "reset-success":
+            $message_title = "이메일 주소로 임시 비밀번호가 발송되었습니다";
+            $message_type = "success";
+            $message_text = "로그인 후 되도록 비밀번호를 변경하여 주시기 바랍니다.";
+            break;
     }
 
     return array(
