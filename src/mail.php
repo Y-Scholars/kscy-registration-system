@@ -9,14 +9,16 @@
 require_once('./mail.account.php');
 require_once('./vendor/phpmailer/phpmailer/PHPMailerAutoload.php');
 
+date_default_timezone_set('Asia/Seoul');
+
 class Mailer {
 
     public function send($email, $title, $content) {
     
         $mail = new PHPMailer;
         $mail->isSMTP();
+        $mail->ContentType= "text/html";
         $mail->CharSet    = "utf-8";
-        $mail->Encoding   = "base64";
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = MAILER_USERNAME;
@@ -32,10 +34,9 @@ class Mailer {
         $mail->Subject = $title;
         $mail->Body    = $content;
         
-        if (!$mail->send())
-            return false;
-        
-        return true;
+        $success = $mail->send();
+
+        return $success;
     }
 }
 

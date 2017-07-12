@@ -6,13 +6,13 @@
  * 2017. 07. 10
  */
 
-//error_reporting(0);
+error_reporting(0);
 
 require_once("./db.php");
 require_once("./utils.php");
 require_once("./session.php");
 require_once("./mail.php");
-error_reporting(-1);
+
 function process() {
 
     global $db;
@@ -61,7 +61,7 @@ function process() {
     }
 
     $email_title = "KSCY 계정 비밀번호를 알려드립니다";
-    $email_content = "<b>" . $student["name"] . "</b>님의 새 비밀번호는 <b>" . $generated_password . "</b>입니다. 로그인 후 비밀번호를 변경해 주시기 바랍니다.";
+    $email_content = "<b>" . $student["name"] . "</b>님의 새 비밀번호는 <b>" . $generated_password . "</b>입니다. 로그인 후 비밀번호를 변경해 주시기 바랍니다.<br/><a href=\"www.kscy.or.kr/register\">www.kscy.or.kr/register</a>";
     $email_sent = $mail->send($student["email"], $email_title, $email_content);
 
     if (!$email_sent) {

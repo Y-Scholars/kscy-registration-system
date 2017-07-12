@@ -124,7 +124,7 @@ function process() {
                        ->update('guardian_phone_number', $utils->purify($user_student_guardian_phone_number))
                        ->update('survey', $utils->purify($user_student_survey))
                        ->update('auto_switch', $utils->purify($user_student_switch_option))
-                       ->where('no', '=', $is_admin >= 0 ? $student_no : $session->get_student_no());
+                       ->where('no', '=', $is_admin ? $student_no : $session->get_student_no());
         
         // 관리자 권한으로 수정했을 경우
         if ($is_admin) {
@@ -146,12 +146,18 @@ function process() {
             $response->update('memo', $utils->purify($user_student_memo));
             $response->update('tag', $utils->purify($user_student_tag));
             // 입력 비밀번호가 바뀌지 않았다면 비밀번호를 변경하지 않음
-            if ($user_student_password != "admin") {
+            if ($user_student_password != "no-change") {
                 $response->update('password', hash("sha256", $utils->purify($user_student_password)));
             }
         } else {
-            $response->update('password', hash("sha256", $utils->purify($user_student_password)));
+
+            $session->delete_student_no();
+
+            if ($user_student_password != "no-change") {
+                $response->update('password', hash("sha256", $utils->purify($user_student_password)));
+            }
         }
+       
         $response = $response->go();
 
         if ($is_admin) {
@@ -228,7 +234,7 @@ function process() {
         exit();
     }
 
-    $session->delete_student_no();
+    
 
     return array(
         "result" => "success",
@@ -340,11 +346,11 @@ include_once("./header.php");
         <div class="two fields">
             <div class="eight wide field required">
                 <label>비밀번호 (Password)</label>
-                <input type="password" name="studentPassword" placeholder="비밀번호 입력" value="<?php echo($response["admin"] ? "admin" : "");?>">
+                <input type="password" name="studentPassword" placeholder="비밀번호 입력" value="<?php echo($response["review"] ? "no-change" : "");?>">
             </div>
             <div class="eight wide field">
                 <label>비밀번호 재입력 (Repeat Password)</label>
-                <input type="password" name="studentPasswordRepeat" placeholder="비밀번호 재입력" value="<?php echo($response["admin"] ? "admin" : "");?>">
+                <input type="password" name="studentPasswordRepeat" placeholder="비밀번호 재입력" value="<?php echo($response["review"] ? "no-change" : "");?>">
             </div>
         </div>
         <?php if ($response["admin"]) { ?>
