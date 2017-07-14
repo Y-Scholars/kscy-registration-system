@@ -84,6 +84,11 @@ function process() {
             $message_type = "success";
             $message_text = "로그인 후 되도록 비밀번호를 변경하여 주시기 바랍니다.";
             break;
+        case "closed":
+            $message_title = "참가 접수가 마감되었습니다";
+            $message_type = "negative";
+            $message_text = "추가적인 문의는 사무국을 통해 주시길 바랍니다.";
+            break;
     }
 
     return array(

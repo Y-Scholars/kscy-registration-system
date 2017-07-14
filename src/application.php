@@ -12,6 +12,7 @@ require_once("./db.php");
 require_once("./utils.php");
 require_once("./session.php");
 require_once("./strings.php");
+require_once("./settings.php");
 require_once("./application.tab.paper.php");
 require_once("./application.tab.plan.php");
 require_once("./application.tab.mentoring.php");
@@ -22,6 +23,7 @@ function process() {
     global $db;
     global $session;
     global $utils;
+    global $settings;
 
     $review_mode = false;
     if (!empty($_GET["review"]) && $_GET["review"] == true) {
@@ -57,6 +59,11 @@ function process() {
                 exit();
             }
         }
+    }
+
+    if ($settings->is_closed() && $session->get_level() < 2) {
+        header("Location: ./message.php?type=closed");
+        exit();
     }
 
     // 탭 정보 읽어오기

@@ -49,6 +49,11 @@ function process() {
         }
     }
 
+    if ($settings->is_closed() && $session->get_level() < 2) {
+        header("Location: ./message.php?type=closed");
+        exit();
+    }
+
     // 변수로 POST 값들 읽어오기
     $user_student_name = $_POST["studentName"];
     $user_student_school_name = $_POST["studentSchoolName"];
