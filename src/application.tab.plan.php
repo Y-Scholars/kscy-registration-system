@@ -252,7 +252,7 @@ function render_plan($response) {
                 <div class="ui button">찾아보기...</div>
             </div>
             <div class="ui pointing blue basic label" >
-                <p> 연구계획 파일은 <u><a href="./files/8th_KSCY_Plan.docx">KSCY 연구계획 양식</a></u>에 맞추어 작성해 주시기 바랍니다.</p>
+                <p> 연구계획 파일은 <u><a href="./files/etc/8th_KSCY_Plan.docx">KSCY 연구계획 양식</a></u>에 맞추어 작성해 주시기 바랍니다.</p>
             </div>
         </div>
         <div class="field required">
