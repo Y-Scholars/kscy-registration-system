@@ -26,12 +26,13 @@ include_once("./header.php");
         <i class="warning circle icon"></i>
         <div class="content">
             <div class="header">유의사항</div>
-            <p>합격 확인 후 입금이 완료되어야 참가가 확정됩니다.</p>
+            <p>합격 확인 후 입금이 완료되어야 참가가 확정됩니다. 추가합격자는 7월 21일(금) 오전 11시까지 참가비를 등록해주시기 바랍니다.</p>
         </div>
     </div>
 
     <h2 class="ui header">합격자 발표</h2>
     <a href="./files/etc/8thKSCY_FinalList_0717.xlsx" class="ui button primary">합격자 명단</a>
+    <a href="./files/etc/8thKSCY_List_0720_2.xlsx" class="ui button primary">추가합격자 명단</a>
     
     <h2 class="ui header">합격자 유의사항</h2>
     <a href="./files/etc/8thKSCY_Paper_Guideline.pdf" class="ui button basic">논문 및 연구계획 발표자</a>
