@@ -7,6 +7,7 @@
  */
 
 error_reporting(0);
+set_time_limit (3600);
 
 require_once("./db.php");
 require_once("./utils.php");
